@@ -23,6 +23,7 @@ class Shape:
         self.master = SHAPE_TYPES[master]
         self.text = text
         self.pos = []
+        # TODO ADD HEIGHT/WIDTH FROM MASTER
 
     def set_position(self, pos):
         self.pos = pos
