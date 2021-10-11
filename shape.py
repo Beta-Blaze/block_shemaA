@@ -11,13 +11,17 @@ SHAPE_TYPES = {
     "MULTI_PAGE_CONNECTOR": 16
 }
 
+count = 1
+
 
 class Shape:
     def __init__(self, master, text=""):
+        global count
         if master not in SHAPE_TYPES:
             print("Illegal shape type")
             exit()
-        self.id = random.randint(0, 99999999999999999999)
+        self.id = count
+        count += 1
         self.master = SHAPE_TYPES[master]
         self.text = text
         self.pos = []
