@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<PageContents xmlns='http://schemas.microsoft.com/office/visio/2012/main' xmlns:r='http://schemas.openxmlformats.org/officeDocument/2006/relationships' xml:space='preserve'><Shapes><Shape ID='23' NameU='Начало' Name='Начало' Type='Shape' Master='2'><Cell N='PinX' V='2.409448729490674'/><Cell N='PinY' V='7.446850490558331'/><Cell N='ObjType' V='1'/><Text>1
+</Text></Shape><Shape ID='25' Type='Shape' Master='2'><Cell N='PinX' V='2.409448729490674'/><Cell N='PinY' V='6.196850527811233'/><Cell N='ObjType' V='1'/><Text>2
+</Text></Shape>
+<Shape ID='26' Type='Shape' Master='20'>
+<Cell N='PinX' V='2.409448729490674' F='Inh'/>
+<Cell N='PinY' V='6.821850509184783' F='Inh'/>
+
+<Cell N='Width' V='0.25' F='GUARD(0.25DL)'/>
+<Cell N='LocPinX' V='0.125' F='Inh'/>
+
+<Cell N='Height' F='GUARD(EndY-BeginY)'/>
+
+<Cell N='LocPinY' V='-0.4281495876727619' F='Inh'/>
+
+<Cell N='BeginX' F='PAR(PNT(Sheet.23!Connections.X1,Sheet.23!Connections.Y1))'/>
+<Cell N='BeginY' V='7.250000096857544' F='PAR(PNT(Sheet.23!Connections.X1,Sheet.23!Connections.Y1))'/>
+
+
+<Cell N='EndX' F='PAR(PNT(Sheet.25!Connections.X3,Sheet.25!Connections.Y3))'/>
+<Cell N='EndY' V='6.39370092151202' F='PAR(PNT(Sheet.25!Connections.X3,Sheet.25!Connections.Y3))'/>
+
+<Cell N='TxtPinX' V='0.125' F='Inh'/>
+<Cell N='TxtPinY' V='-0.4281495809555054' F='Inh'/>
+<Section N='Control'><Row N='TextPosition'><Cell N='X' V='0.125'/><Cell N='Y' V='-0.4281495809555054'/><Cell N='XDyn' V='0.125' F='Inh'/><Cell N='YDyn' V='-0.4281495809555054' F='Inh'/></Row></Section>
+
+
+<Section N='Geometry' IX='0'>
+<Row T='MoveTo' IX='1'> <Cell N='X' V='0.125'/></Row>
+<Row T='LineTo' IX='2'><Cell N='X' V='0.125'/><Cell N='Y' V='-0.8562991753455238'/></Row>
+<Row T='LineTo' IX='3' Del='1'/></Section>
+</Shape></Shapes>
+
+<Connects>
+</PageContents>
