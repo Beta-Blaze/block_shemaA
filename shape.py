@@ -11,14 +11,17 @@ SHAPE_TYPES = {
 
 
 class Shape:
-    def __init__(self, shape_id, master, x, y, text=""):
+    def __init__(self, shape_id, master, text=""):
         if master not in SHAPE_TYPES:
             print("Illegal shape type")
             exit()
         self.id = shape_id
         self.master = SHAPE_TYPES[master]
-        self.pos = [x, y]
         self.text = text
+        self.pos = []
+
+    def set_position(self, pos):
+        self.pos = pos
 
     def get_xml(self):
         return f"""<Shape ID='{self.id}' Type='Shape' Master='{self.master}'><Cell N='PinX' V='{self.pos[0]}'/>

@@ -11,7 +11,7 @@ class Lxml:
         self.filename = filename
         self.shapes = []
 
-    def parse(self):
+    def generate_page_xml(self):
         temp = '''<?xml version='1.0' encoding='utf-8' ?>
 <PageContents xmlns='http://schemas.microsoft.com/office/visio/2012/main' xmlns:r='http://schemas.openxmlformats.org/officeDocument/2006/relationships' xml:space='preserve'>
 <Shapes>'''
@@ -23,7 +23,7 @@ class Lxml:
 
     def write_file(self):
         with open(self.filename) as f:
-            f.write(self.parse())
+            f.write(self.generate_page_xml())
 
     def add_shape(self, shape, direction, x, y):
         try:
