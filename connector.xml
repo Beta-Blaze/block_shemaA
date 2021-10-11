@@ -13,11 +13,11 @@
 
 <Cell N='LocPinY' V='-0.4281495876727619' F='Inh'/>
 
-<Cell N='BeginX' F='PAR(PNT(Sheet.23!Connections.X1,Sheet.23!Connections.Y1))'/>
+<Cell N='BeginX' V='2.409448729490674' F='PAR(PNT(Sheet.23!Connections.X1,Sheet.23!Connections.Y1))'/>
 <Cell N='BeginY' V='7.250000096857544' F='PAR(PNT(Sheet.23!Connections.X1,Sheet.23!Connections.Y1))'/>
 
 
-<Cell N='EndX' F='PAR(PNT(Sheet.25!Connections.X3,Sheet.25!Connections.Y3))'/>
+<Cell N='EndX' V='2.409448729490674' F='PAR(PNT(Sheet.25!Connections.X3,Sheet.25!Connections.Y3))'/>
 <Cell N='EndY' V='6.39370092151202' F='PAR(PNT(Sheet.25!Connections.X3,Sheet.25!Connections.Y3))'/>
 
 <Cell N='TxtPinX' V='0.125' F='Inh'/>
@@ -30,6 +30,4 @@
 <Row T='LineTo' IX='2'><Cell N='X' V='0.125'/><Cell N='Y' V='-0.8562991753455238'/></Row>
 <Row T='LineTo' IX='3' Del='1'/></Section>
 </Shape></Shapes>
-
-<Connects>
 </PageContents>
