@@ -10,7 +10,7 @@ class Lxml:
         for x in range(len(self.shapes)):
             for y in range(len(self.shapes[x])):
                 if self.shapes[x][y]:
-                    self.shapes[x][y].set_position([x, y])
+                    self.shapes[x][y].set_position([x, -y])
                     temp += self.shapes[x][y].get_xml()
         temp += '''</Shapes>
 </PageContents>'''
