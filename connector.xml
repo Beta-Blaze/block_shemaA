@@ -1,10 +1,14 @@
 <?xml version='1.0' encoding='utf-8' ?>
-<PageContents xmlns='http://schemas.microsoft.com/office/visio/2012/main' xmlns:r='http://schemas.openxmlformats.org/officeDocument/2006/relationships' xml:space='preserve'><Shapes><Shape ID='23' NameU='Начало' Name='Начало' Type='Shape' Master='2'><Cell N='PinX' V='2.409448729490674'/><Cell N='PinY' V='7.446850490558331'/><Cell N='ObjType' V='1'/><Text>1
-</Text></Shape><Shape ID='25' Type='Shape' Master='2'><Cell N='PinX' V='2.409448729490674'/><Cell N='PinY' V='6.196850527811233'/><Cell N='ObjType' V='1'/><Text>2
+<PageContents xmlns='http://schemas.microsoft.com/office/visio/2012/main' xmlns:r='http://schemas.openxmlformats.org/officeDocument/2006/relationships' xml:space='preserve'><Shapes>
+    <Shape ID='23' NameU='Начало' Name='Начало' Type='Shape' Master='2'>
+        <Cell N='PinX' V='2.409448729490674'/><Cell N='PinY' V='7.446850490558331'/>
+        <Cell N='ObjType' V='1'/><Text>1
+</Text></Shape><Shape ID='25' Type='Shape' Master='2'><Cell N='PinX' V='2.409448729490674'/>
+    <Cell N='PinY' V='6.196850527811233'/><Cell N='ObjType' V='1'/><Text>2
 </Text></Shape>
 <Shape ID='26' Type='Shape' Master='20'>
 <Cell N='PinX' V='2.409448729490674'/>
-<Cell N='PinY' V='6.821850509184783'/>
+<Cell N='PinY' V='6.821850509184783'/> <!-- EndY - abs(HEIGHT / 2) -->
 
 <Cell N='Width' F='GUARD(0.25DL)'/>
 <Cell N='LocPinX' V='0.125'/>
@@ -14,11 +18,11 @@
 <Cell N='LocPinY' V='-0.4281495876727619'/>
 
 <Cell N='BeginX' V='2.409448729490674' />
-<Cell N='BeginY' V='7.250000096857544' />
+<Cell N='BeginY' V='7.250000096857544' /> <!-- START BLOCK PIN_Y - HEIGHT/2 -->
 
 
 <Cell N='EndX' V='2.409448729490674' />
-<Cell N='EndY' V='6.39370092151202' />
+<Cell N='EndY' V='6.39370092151202' /> <!-- END BLOCK PIN_Y + HEIGHT / 2  -->
 
 <Cell N='TxtPinX' V='0.125'/>
 <Cell N='TxtPinY' V='-0.4281495809555054'/>
