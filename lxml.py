@@ -7,12 +7,12 @@ class Lxml:
         temp = '''<?xml version='1.0' encoding='utf-8' ?>
 <PageContents xmlns='http://schemas.microsoft.com/office/visio/2012/main' xmlns:r='http://schemas.openxmlformats.org/officeDocument/2006/relationships' xml:space='preserve'>
 <Shapes>'''
-        for y in range(len(self.shapes)):
-            for x in range(len(self.shapes[y])):
-                if x:
+        for x in range(len(self.shapes)):
+            for y in range(len(self.shapes[x])):
+                if self.shapes[x][y]:
                     print(self.shapes[x][y])
                     self.shapes[x][y].set_position([x, y])
-                    temp += x.get_xml()
+                    temp += self.shapes[x][y].get_xml()
         temp += '''</Shapes>
 </PageContents>'''
         return temp
