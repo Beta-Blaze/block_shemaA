@@ -6,27 +6,24 @@ input()
 v.save_vsdx_file()
 
 
-class Shape:
-    def __init__(self, shape_id, master, x, y, text=""):
-        self.id = shape_id
-        self.master = master
-        self.pos = [x, y]
-        self.text = text
-
-    def get_xml(self):
-        return f"""<Shape ID='{self.id}' Type='Shape' Master='{self.master}'><Cell N='PinX' V='{self.pos[0]}'/>
-        <Cell N='PinY' V='{self.pos[1]}'/>
-        <Text>{self.text}</Text></Shape>
-        """
-
-
 class Lxml:
     def __init__(self, filename):
         self.filename = filename
-
-    def open_file(self):
-        with open(self.filename) as f:
-            self.content = ''.join(f.readlines()[1:])
+        self.shapes = []
 
     def parse(self):
-        ...
+        temp = '''<?xml version='1.0' encoding='utf-8' ?>
+<PageContents xmlns='http://schemas.microsoft.com/office/visio/2012/main' xmlns:r='http://schemas.openxmlformats.org/officeDocument/2006/relationships' xml:space='preserve'>
+<Shapes>'''
+        for i in self.shapes:
+            temp += i.get_xml()
+        temp += '''</Shapes>
+</PageContents>'''
+        return temp
+
+    def write_file(self):
+        with open(self.filename) as f:
+            f.write(self.parse())
+
+    def add_shape(self, shape):
+        self.shapes.append(shape)
