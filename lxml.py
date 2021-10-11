@@ -25,5 +25,23 @@ class Lxml:
         with open(self.filename) as f:
             f.write(self.parse())
 
-    def add_shape(self, shape):
-        self.shapes.append(shape)
+    def add_shape(self, shape, direction, x, y):
+        try:
+            self.shapes[x][y]
+        except Exception:
+            print('всё плохо')
+            exit()
+        if direction == 'd':
+            self.shapes.append([] * len(self.shapes[0]))
+
+            self.shapes[x + 1][y] = shape
+        if direction == 'r':
+            self.shapes.append([] * len(self.shapes[0]))
+            self.shapes = [i.append([]) for i in self.shapes]
+
+            self.shapes[x + 1][y + 1] = shape
+        if direction == 'l':
+            self.shapes.append([] * len(self.shapes[0]))
+            self.shapes = [[] + i for i in self.shapes]
+
+            self.shapes[x + 1][y - 1] = shape
