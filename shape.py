@@ -1,3 +1,5 @@
+import random
+
 SHAPE_TYPES = {
     "START": 2,
     "PROCESS": 4,
@@ -11,11 +13,11 @@ SHAPE_TYPES = {
 
 
 class Shape:
-    def __init__(self, shape_id, master, text=""):
+    def __init__(self, master, text=""):
         if master not in SHAPE_TYPES:
             print("Illegal shape type")
             exit()
-        self.id = shape_id
+        self.id = random.randint(0, 99999999999999999999)
         self.master = SHAPE_TYPES[master]
         self.text = text
         self.pos = []
