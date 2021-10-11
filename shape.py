@@ -1,5 +1,3 @@
-import random
-
 SHAPE_TYPES = {
     "START": 2,
     "PROCESS": 4,

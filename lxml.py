@@ -1,7 +1,7 @@
 class Lxml:
     def __init__(self):
         self.filename = r"temp\visio\pages\page1.xml"
-        self.shapes = [[[]]]
+        self.shapes = [[0]]
 
     def generate_page_xml(self):
         temp = '''<?xml version='1.0' encoding='utf-8' ?>
@@ -10,8 +10,7 @@ class Lxml:
         for x in range(len(self.shapes)):
             for y in range(len(self.shapes[x])):
                 if self.shapes[x][y]:
-                    print(self.shapes[x][y])
-                    self.shapes[x][y].set_position([y, x])
+                    self.shapes[x][y].set_position([x, y])
                     temp += self.shapes[x][y].get_xml()
         temp += '''</Shapes>
 </PageContents>'''
@@ -28,16 +27,15 @@ class Lxml:
             print('всё плохо')
             exit()
         if direction == 'd':
-            self.shapes.append([[] * len(self.shapes[0][0])])
-            print(self.shapes)
+            self.shapes.append([0 for _ in range(len(self.shapes[0]))])
             self.shapes[x + 1][y] = shape
         if direction == 'r':
-            self.shapes.append([[] * len(self.shapes[0][0])])
-            self.shapes = [i + [[]] for i in self.shapes]
+            self.shapes.append([0 for _ in range(len(self.shapes[0]))])
+            self.shapes = [i + [0] for i in self.shapes]
 
             self.shapes[x + 1][y + 1] = shape
         if direction == 'l':
-            self.shapes.append([[] * len(self.shapes[0][0])])
-            self.shapes = [[[]] + i for i in self.shapes]
+            self.shapes.append([0 for _ in range(len(self.shapes[0]))])
+            self.shapes = [[0] + i for i in self.shapes]
 
             self.shapes[x + 1][y - 1] = shape
