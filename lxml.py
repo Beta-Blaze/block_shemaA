@@ -18,7 +18,7 @@ class Lxml:
         return temp
 
     def write_file(self):
-        with open(self.filename, 'w') as f:
+        with open(self.filename, 'w', encoding="utf-8") as f:
             f.write(self.generate_page_xml())
 
     def add_shape(self, shape, direction, x, y):
