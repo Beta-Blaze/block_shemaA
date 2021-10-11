@@ -14,6 +14,7 @@ class Shape:
     def __init__(self, shape_id, master, x, y, text=""):
         if master not in SHAPE_TYPES:
             print("Illegal shape type")
+            exit()
         self.id = shape_id
         self.master = SHAPE_TYPES[master]
         self.pos = [x, y]

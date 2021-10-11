@@ -2,7 +2,7 @@ import shutil
 import zipfile
 
 
-class Vsdx:
+class Vsdx_old:
     def __init__(self, filename):
         self.filename = filename
         self.base_filename = self.filename[:-5]
@@ -17,3 +17,14 @@ class Vsdx:
         shutil.move(self.base_filename + '.zip', self.base_filename + '_new.vsdx')
         shutil.rmtree(self.directory + "\\temp")
 
+
+class Vsdx:
+    def __init__(self, filename):
+        self.filename = filename
+        self.directory = '\\'.join(__file__.split("\\")[:-1]) + '\\'
+        shutil.copytree(self.directory + "empty-doc", self.directory + "temp")
+
+    def save_vsdx_file(self):
+        shutil.make_archive("temp", 'zip', self.directory + 'temp')
+        shutil.move('temp.zip', self.filename)
+        shutil.rmtree("temp")
