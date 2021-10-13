@@ -3,10 +3,10 @@ SHAPE_TYPES = {
     "PROCESS": 4,
     "INPUT": 5,
     "IF": 6,
-    "MODIFICATION": 9,
-    "DEFINED_PROCESS": 12,
-    "ONE_PAGE_CONNECTOR": 15,
-    "MULTI_PAGE_CONNECTOR": 16
+    "MODIFICATION": 7,
+    "DEFINED_PROCESS": 8,
+    "ONE_PAGE_CONNECTOR": 9,
+    "MULTI_PAGE_CONNECTOR": 10
 }
 
 SHAPE_SIZE = {
@@ -35,7 +35,7 @@ class Shape:
         self.master = SHAPE_TYPES[master]
         self.text = text
         self.pos = []
-        # TODO ADD HEIGHT/WIDTH FROM MASTER
+        self.size = SHAPE_SIZE[master]
 
     def set_position(self, pos):
         self.pos = pos
