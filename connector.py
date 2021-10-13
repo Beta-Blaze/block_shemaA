@@ -30,7 +30,7 @@ class Connector:
                         <Cell N='Width' F='GUARD({CONNECTOR_WIDTH}DL)'/>
                         <Cell N='Height' V = '{self.height}' F='GUARD(EndY-BeginY)'/>
                         <Cell N='LocPinX' V='{CONNECTOR_WIDTH * 0.5}'/>
-                        <Cell N='LocPinY' V='{round(self.height * 0.5, 15)}'/>
+                        <Cell N='LocPinY' V='{self.height * 0.5}'/>
                         <Cell N='BeginX' V='{self.begin_x}' />
                         <Cell N='BeginY' V='{self.begin_y}' />
                         <Cell N='EndX' V='{self.end_x}' />
