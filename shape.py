@@ -36,22 +36,35 @@ class Shape:
         self.text = text
         self.pos = []
         self.size = SHAPE_SIZE[master]
-        self.to_s = None
+        self.to_s = []
         self.from_s = None
         self.type = None
+        self.cords = None
+        self.shapes = None
 
     def set_position(self, x, y):
         self.pos = [x, y]
 
-    def move(self, vector):
-        if self.type:
-            ...
+    def move(self, vector, direction=''):
+        if self.type == "base":
+            return
+
         if vector == 'r':
-            ...
+            self.pos[0] += 1.5
+
         if vector == 'l':
-            ...
-        if vector == 'base':
-            ...
+            self.pos[0] -= 1.5
+
+        for i in self.shapes:
+            i: Shape
+            if self.pos == i.pos and self != i:
+                i.move(vector)
+
+        if not direction or direction == 'd':
+            for i in self.to_s:
+                i.move(vector, 'd')
+        if not direction or direction == 'a':
+            self.from_s.move(vector, 'a')
 
     def get_xml(self):
         return f"""<Shape ID='{self.id}' Type='Shape' Master='{self.master}'><Cell N='PinX' V='{self.pos[0]}'/>

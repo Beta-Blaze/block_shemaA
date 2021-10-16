@@ -6,6 +6,7 @@ class Lxml:
         self.filename = r"temp\visio\pages\page1.xml"
         self.shapes = []
         self.cords = []
+        self.first_if = True
 
     def generate_page_xml(self):
         temp = '''<?xml version='1.0' encoding='utf-8' ?>
@@ -27,7 +28,7 @@ class Lxml:
             if new_shape.pos == i.pos:
                 i.move(direction)
 
-    def add_shape(self, new_shape, direction, prev_shape=False):
+    def add_shape(self, new_shape: shape.Shape, direction, prev_shape=None):
         if not prev_shape:
             new_shape.set_position(0, 0)
             new_shape.type = 'base'
@@ -38,10 +39,10 @@ class Lxml:
         x, y = prev_shape.pos
 
         if direction == 'l':
-            new_shape.set_position(x - 1, y - 1)
+            new_shape.set_position(x - 1.5, y - 1)
 
         elif direction == 'r':
-            new_shape.set_position(x + 1, y - 1)
+            new_shape.set_position(x + 1.5, y - 1)
 
         elif direction == 'd':
             new_shape.set_position(x, y - 1)
@@ -51,7 +52,12 @@ class Lxml:
 
         new_shape.type = direction
         new_shape.from_s = prev_shape
-        prev_shape.to_s = new_shape
+        new_shape.cords = self.cords
+        new_shape.shapes = self.shapes
+        prev_shape.to_s.append(new_shape)
+
+        if new_shape.master == "IF" and self.first_if:
+            new_shape.type = "base"
 
         self.shapes.append(new_shape)
         self.cords.append(new_shape.pos)
