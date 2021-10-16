@@ -11,15 +11,27 @@ class Connector:
         :param connector_position: true - vertical; false - horizontal
         :param shape_to: Shape object
         """
-        self.from_id = shape_from.id
-        self.to_id = shape_to.id
-        self.begin_x = shape_from.pos[0] if connector_position[0] else shape_from.pos[1] - shape_from.size[0] / 2
-        self.begin_y = shape_from.pos[1] - shape_from.size[0] / 2 if connector_position[0] else shape_from.pos[1]
-        self.end_x = shape_to.pos[0] if connector_position[1] else shape_to.pos[1] + shape_to.size[0] / 2
-        self.end_y = shape_to.pos[1] + shape_to.size[0] / 2 if connector_position[1] else shape_to.pos[1]
+        self.shape_from = shape_from
+        self.shape_to = shape_to
+        self.connector_position = connector_position
+        self.begin_x = self.begin_y = self.end_y = self.end_x = \
+            self.height = self.pin_x = self.pin_y = None
+
+    def calculate_position(self):
+        self.begin_x = self.shape_from.pos[0] if self.connector_position[0] else self.shape_from.pos[1] - \
+                                                                                 self.shape_from.size[0] / 2
+        self.begin_y = self.shape_from.pos[1] - self.shape_from.size[0] / 2 if self.connector_position[0] else \
+            self.shape_from.pos[1]
+        self.end_x = self.shape_to.pos[0] if self.connector_position[1] else self.shape_to.pos[1] + self.shape_to.size[
+            0] / 2
+        self.end_y = self.shape_to.pos[1] + self.shape_to.size[0] / 2 if self.connector_position[1] else \
+            self.shape_to.pos[1]
         self.height = self.end_y - self.begin_y
-        self.pin_x = self.begin_x if connector_position[0] else shape_from.pos[0] - (shape_from.pos[0] - shape_to.pos[0]) / 2
-        self.pin_y = shape_from.pos[1] - (shape_from.pos[1] - shape_to.pos[1]) / 2 if connector_position[0] else self.begin_y
+        self.pin_x = self.begin_x if self.connector_position[0] else self.shape_from.pos[0] - (
+                self.shape_from.pos[0] - self.shape_to.pos[0]) / 2
+        self.pin_y = self.shape_from.pos[1] - (self.shape_from.pos[1] - self.shape_to.pos[1]) / 2 if \
+            self.connector_position[
+                0] else self.begin_y
 
     def get_xml(self):
         global id_shape_counter
