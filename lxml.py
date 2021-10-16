@@ -1,3 +1,6 @@
+import shape
+
+
 class Lxml:
     def __init__(self):
         self.filename = r"temp\visio\pages\page1.xml"
@@ -18,40 +21,39 @@ class Lxml:
         with open(self.filename, 'w', encoding="utf-8") as f:
             f.write(self.generate_page_xml())
 
-    def add_shape(self, new_shape, direction, prew_shape=False):
-        if not prew_shape:
+    def moves(self, new_shape, direction):
+        for i in self.shapes:
+            i: shape.Shape
+            if new_shape.pos == i.pos:
+                i.move(direction)
+
+    def add_shape(self, new_shape, direction, prev_shape=False):
+        if not prev_shape:
             new_shape.set_position(0, 0)
+            new_shape.type = 'base'
             self.shapes.append(new_shape)
             self.cords.append(new_shape.pos)
             return new_shape
 
+        x, y = prev_shape.pos
+
         if direction == 'l':
-            x, y = prew_shape.pos
             new_shape.set_position(x - 1, y - 1)
-            while new_shape.pos in self.cords:
-                x, y = new_shape.pos
-                new_shape.set_position(x - 1, y)
 
         elif direction == 'r':
-            x, y = prew_shape.pos
             new_shape.set_position(x + 1, y - 1)
-            while new_shape.pos in self.cords:
-                x, y = new_shape.pos
-                new_shape.set_position(x + 1, y)
 
         elif direction == 'd':
-            x, y = prew_shape.pos
-
             new_shape.set_position(x, y - 1)
 
-            new_shape.from_s = prew_shape
-            prew_shape.to_s = new_shape
+        if new_shape.pos in self.cords:
+            self.moves(new_shape, direction)
 
-            while new_shape.pos in self.cords:
-                x, y = new_shape.pos
-                new_shape.set_position(x, y + 1)
+        new_shape.type = direction
+        new_shape.from_s = prev_shape
+        prev_shape.to_s = new_shape
 
-            self.shapes.append(new_shape)
-            self.cords.append(new_shape.pos)
+        self.shapes.append(new_shape)
+        self.cords.append(new_shape.pos)
 
         return new_shape

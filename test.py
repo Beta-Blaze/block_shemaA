@@ -6,16 +6,10 @@ v = Vsdx("new.vsdx")
 
 lx = Lxml()
 my_shape = lx.add_shape(Shape("PROCESS", "1"), 'd')
-my_shape = lx.add_shape(Shape("INPUT", "2"), 'd', my_shape)
-my_shape = lx.add_shape(Shape("INPUT", "2"), 'd', my_shape)
-my_shape = lx.add_shape(Shape("INPUT", "2"), 'd', my_shape)
-my_shape = lx.add_shape(Shape("INPUT", "2"), 'd', my_shape)
-my_shape = lx.add_shape(Shape("INPUT", "2"), 'd', my_shape)
-my_shape = lx.add_shape(Shape("INPUT", "2"), 'd', my_shape)
-my_shape = lx.add_shape(Shape("INPUT", "2"), 'd', my_shape)
-my_shape = lx.add_shape(Shape("INPUT", "2"), 'd', my_shape)
-my_shape = lx.add_shape(Shape("INPUT", "2"), 'd', my_shape)
-my_shape = lx.add_shape(Shape("INPUT", "2"), 'd', my_shape)
+my_shape = lx.add_shape(Shape("PROCESS", "2"), 'd', my_shape)
+my_shape = lx.add_shape(Shape("PROCESS", "2"), 'd', my_shape)
+my_shape = lx.add_shape(Shape("PROCESS", "2"), 'r', my_shape)
+
 
 lx.write_file()
 
