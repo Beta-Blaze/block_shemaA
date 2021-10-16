@@ -58,6 +58,7 @@ class Lxml:
 
         if new_shape.master == "IF" and self.first_if:
             new_shape.type = "base"
+            self.first_if = False
 
         self.shapes.append(new_shape)
         self.cords.append(new_shape.pos)
