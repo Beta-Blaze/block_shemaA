@@ -36,9 +36,11 @@ class Shape:
         self.text = text
         self.pos = []
         self.size = SHAPE_SIZE[master]
+        self.to_s = None
+        self.from_s = None
 
-    def set_position(self, pos):
-        self.pos = pos
+    def set_position(self, x, y):
+        self.pos = [x, y]
 
     def get_xml(self):
         return f"""<Shape ID='{self.id}' Type='Shape' Master='{self.master}'><Cell N='PinX' V='{self.pos[0]}'/>
