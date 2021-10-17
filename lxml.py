@@ -1,6 +1,7 @@
 import shape
 from connector import Connector
 
+
 class Lxml:
     def __init__(self):
         self.filename = r"temp\visio\pages\page1.xml"
@@ -8,6 +9,7 @@ class Lxml:
         self.connectors = []
         self.cords = []
         self.first_if = True
+        self.shape_id_counter = 0
 
     def generate_page_xml(self):
         temp = '''<?xml version='1.0' encoding='utf-8' ?>
@@ -32,13 +34,17 @@ class Lxml:
                 i.move(direction)
 
     def add_connector(self, from_shape, to_shape, connector_position):
-        c = Connector(from_shape, to_shape, connector_position)
+        self.shape_id_counter += 1
+
+        c = Connector(self.shape_id_counter, from_shape, to_shape, connector_position)
         self.connectors.append(c)
 
     def add_shape(self, master, text, direction, prev_shape=None):
+        self.shape_id_counter += 1
+
         if not prev_shape:
-            new_shape = shape.Shape(master, text, 'base', self.cords, self.shapes)
-            new_shape.set_position(5, 5)
+            new_shape = shape.Shape(self.shape_id_counter, master, text, 'base', self.cords, self.shapes)
+            new_shape.set_position(4, 10)
             self.shapes.append(new_shape)
             self.cords.append(new_shape.pos)
 
@@ -49,7 +55,7 @@ class Lxml:
 
         x, y = prev_shape.pos
 
-        new_shape = shape.Shape(master, text, direction, self.cords, self.shapes, prev_shape)
+        new_shape = shape.Shape(self.shape_id_counter, master, text, direction, self.cords, self.shapes, prev_shape)
 
         if direction == 'l':
             new_shape.set_position(x - 1.5, y - 1)

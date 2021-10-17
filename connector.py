@@ -2,7 +2,7 @@ CONNECTOR_WIDTH = 0.25
 
 
 class Connector:
-    def __init__(self, shape_from, shape_to, connector_position):
+    def __init__(self, shape_id, shape_from, shape_to, connector_position):
         """
         :param shape_from: Shape object
         :param connector_position: true - vertical; false - horizontal
@@ -11,6 +11,7 @@ class Connector:
         self.shape_from = shape_from
         self.shape_to = shape_to
         self.connector_position = connector_position
+        self.shape_id = shape_id
         self.begin_x = self.begin_y = self.end_y = self.end_x = self.height = self.pin_x = self.pin_y = None
 
     def calculate_position(self):
@@ -24,7 +25,7 @@ class Connector:
 
     def get_xml(self):
         self.calculate_position()
-        return f"""<Shape ID='{1}' Type='Shape' Master='11'>
+        return f"""<Shape ID='{self.shape_id}' Type='Shape' Master='11'>
                         <Cell N='PinX' V='{self.pin_x}'/>
                         <Cell N='PinY' V='{self.pin_y}'/>
                         <Cell N='Width' F='GUARD({CONNECTOR_WIDTH}DL)'/>

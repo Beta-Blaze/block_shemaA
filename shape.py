@@ -21,17 +21,13 @@ SHAPE_SIZE = {
     "MULTI_PAGE_CONNECTOR": [0.4724409448818898, 0.3937007874015749]
 }
 
-id_shape_counter = 1
-
 
 class Shape:
-    def __init__(self, master, text="", shape_type=None, cords=None, shapes=None, from_s=None):
-        global id_shape_counter
+    def __init__(self, shape_id, master, text="", shape_type=None, cords=None, shapes=None, from_s=None):
         if master not in SHAPE_TYPES:
             print("Illegal shape type")
             exit()
-        self.id = id_shape_counter
-        id_shape_counter += 1
+        self.shape_id = shape_id
         self.master = SHAPE_TYPES[master]
         self.text = text
         self.pos = []
@@ -67,7 +63,7 @@ class Shape:
             self.from_s.move(vector, 'a')
 
     def get_xml(self):
-        return f"""<Shape ID='{self.id}' Type='Shape' Master='{self.master}'><Cell N='PinX' V='{self.pos[0]}'/>
+        return f"""<Shape ID='{self.shape_id}' Type='Shape' Master='{self.master}'><Cell N='PinX' V='{self.pos[0]}'/>
         <Cell N='PinY' V='{self.pos[1]}'/>
         <Text>{self.text}</Text></Shape>
         """
