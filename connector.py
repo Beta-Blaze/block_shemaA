@@ -1,4 +1,3 @@
-from shape import id_shape_counter
 CONNECTOR_WIDTH = 0.25
 
 
@@ -25,9 +24,7 @@ class Connector:
         self.pin_y = self.shape_from.pos[1] - (self.shape_from.pos[1] - self.shape_to.pos[1]) / 2 if self.connector_position[0] else self.begin_y
 
     def get_xml(self):
-        global id_shape_counter
-        id_shape_counter += 1
-        return f"""<Shape ID='{id_shape_counter}' Type='Shape' Master='11'>
+        return f"""<Shape ID='{1}' Type='Shape' Master='11'> #TODP
                         <Cell N='PinX' V='{self.pin_x}'/>
                         <Cell N='PinY' V='{self.pin_y}'/>
                         <Cell N='Width' F='GUARD({CONNECTOR_WIDTH}DL)'/>
