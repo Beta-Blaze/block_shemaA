@@ -25,7 +25,7 @@ id_shape_counter = 1
 
 
 class Shape:
-    def __init__(self, master, text=""):
+    def __init__(self, master, text="", shape_type=None, cords=None, shapes=None, from_s=None):
         global id_shape_counter
         if master not in SHAPE_TYPES:
             print("Illegal shape type")
@@ -37,16 +37,16 @@ class Shape:
         self.pos = []
         self.size = SHAPE_SIZE[master]
         self.to_s = []
-        self.from_s = None
-        self.type = None
-        self.cords = None
-        self.shapes = None
+        self.from_s = from_s
+        self.shape_type = shape_type
+        self.cords = cords
+        self.shapes = shapes
 
     def set_position(self, x, y):
         self.pos = [x, y]
 
     def move(self, vector, direction=''):
-        if self.type == "base":
+        if self.shape_type == "base":
             return
 
         if vector == 'r':
