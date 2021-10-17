@@ -1,5 +1,6 @@
 from vsdx import Vsdx
 from lxml import Lxml
+from connector import Connector
 
 v = Vsdx("new.vsdx")
 
@@ -17,6 +18,9 @@ my_shape1 = lx.add_shape("PROCESS", "1", 'd')
 my_shape2 = lx.add_shape("PROCESS", "2", 'd', my_shape1)
 my_shape3 = lx.add_shape("PROCESS", "3", 'd', my_shape2)
 my_shape4 = lx.add_shape("PROCESS", "4", 'd', my_shape3)
+
+lx.add_connector(my_shape1, my_shape2, [1, 1])
+
 
 lx.write_file()
 

@@ -11,8 +11,7 @@ class Connector:
         self.shape_from = shape_from
         self.shape_to = shape_to
         self.connector_position = connector_position
-        self.begin_x = self.begin_y = self.end_y = self.end_x = \
-            self.height = self.pin_x = self.pin_y = None
+        self.begin_x = self.begin_y = self.end_y = self.end_x = self.height = self.pin_x = self.pin_y = None
 
     def calculate_position(self):
         self.begin_x = self.shape_from.pos[0] if self.connector_position[0] else self.shape_from.pos[1] - self.shape_from.size[0] / 2
@@ -24,7 +23,8 @@ class Connector:
         self.pin_y = self.shape_from.pos[1] - (self.shape_from.pos[1] - self.shape_to.pos[1]) / 2 if self.connector_position[0] else self.begin_y
 
     def get_xml(self):
-        return f"""<Shape ID='{1}' Type='Shape' Master='11'> #TODP
+        self.calculate_position()
+        return f"""<Shape ID='{1}' Type='Shape' Master='11'>
                         <Cell N='PinX' V='{self.pin_x}'/>
                         <Cell N='PinY' V='{self.pin_y}'/>
                         <Cell N='Width' F='GUARD({CONNECTOR_WIDTH}DL)'/>
