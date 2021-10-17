@@ -28,10 +28,10 @@ class Lxml:
             if new_shape.pos == i.pos:
                 i.move(direction)
 
-    def add_shape(self, new_shape: shape.Shape, direction, prev_shape=None):
+    def add_shape(self, master, text, direction, prev_shape=None):
         if not prev_shape:
+            new_shape = shape.Shape(master, text, 'base', self.cords, self.shapes)
             new_shape.set_position(0, 0)
-            new_shape.type = 'base'
             self.shapes.append(new_shape)
             self.cords.append(new_shape.pos)
 
@@ -41,6 +41,8 @@ class Lxml:
             return new_shape
 
         x, y = prev_shape.pos
+
+        new_shape = shape.Shape(master, text, direction, self.cords, self.shapes, prev_shape)
 
         if direction == 'l':
             new_shape.set_position(x - 1.5, y - 1)
@@ -54,17 +56,13 @@ class Lxml:
         if new_shape.pos in self.cords:
             self.moves(new_shape, direction)
 
-        new_shape.type = direction
-        new_shape.from_s = prev_shape
-        new_shape.cords = self.cords
-        new_shape.shapes = self.shapes
         prev_shape.to_s.append(new_shape)
 
         self.shapes.append(new_shape)
         self.cords.append(new_shape.pos)
 
-        if new_shape.master == shape.SHAPE_TYPES["IF"] and self.first_if:
-            new_shape.type = "base"
+        if master == shape.SHAPE_TYPES["IF"] and self.first_if:
+            new_shape.shape_type = "base"
             self.first_if = False
 
         return new_shape
