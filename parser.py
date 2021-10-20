@@ -1,4 +1,3 @@
-import os
 import subprocess
 import re
 
@@ -25,24 +24,23 @@ class Parser:
             if not any([r in i for r in rubbish]) and i != '\n':
                 emp.append(i[:-1])
             if 'define' in i:
-                self.defines.append(i)
+                self.defines.append(i[:-1])
         self.data = emp
 
     def define(self):
         for i in self.defines:
-            i = ' '.join(i.split()[1:])
-            try:  # TODO define без скобок(переменных)
-                perem = i[i.index('(') + 1: i.index(')')]
-            except Exception:
+            i: str = i[8:]
+            if i[i.index(' ') - 1] != ')':
                 name = i.split()[0]
                 temp = ' '.join(i.split()[1:])
                 self.parse_defines_without_brackets.append([name, temp])
                 continue
+            perem = i[i.index('(') + 1: i.index(')')]
             name = i[: i.index('(')]
-            i = i[i.index(')') + 1:]
+            i = i[i.index(')') + 2:]
             symb = '+ - * / % ^ & | ~ ! = < >  = < > , ( ) [ ]'.split(' ') + [' ']
             ids = []
-            for b in range(0, len(i) - len(perem)):
+            for b in range(0, len(i) - len(perem) + 1):
                 if i[b: b + len(perem)] == perem:
                     if i[b - 1] in symb:
                         if b + len(perem) + 1 in range(0, len(i) - len(perem)):
@@ -51,11 +49,10 @@ class Parser:
                         else:
                             ids.append([b, b + len(perem)])
             temp = []
-            i2 = i
-            for id_ in ids[::-1]:
-                temp.insert(0, i2[id_[1]:])
-                i2 = i2[:id_[0]]
-            temp.insert(0, i2)
+            for i2 in ids[::-1]:
+                temp.insert(0, i[i2[1]:])
+                i = i[:i2[0]]
+            temp.insert(0, i)
             self.parse_defines_with_brackets.append([name, perem, temp])
 
     def parse_variables(self, string: str) -> list[str, str | None] | None:
