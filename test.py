@@ -11,7 +11,6 @@ lx = Lxml()
 #
 # my_shape5 = lx.add_shape(Shape("PROCESS", "5"), 'd', my_shape1)
 # my_shape6 = lx.add_shape(Shape("PROCESS", "6"), 'd', my_shape5)
-# my_shape = lx.add_shape(Shape("PROCESS", "7"), 'r', my_shape6)
 
 my_shape1 = lx.add_shape("PROCESS", "1", 'd')
 my_shape2 = lx.add_shape("PROCESS", "2", 'l', my_shape1)
