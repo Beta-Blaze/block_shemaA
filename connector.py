@@ -20,7 +20,7 @@ class Connector:
         elif self.shape_to.shape_type == 'r':
             self.begin_x = self.shape_from.pos[0] + self.shape_from.size[1] / 2
             self.begin_y = self.shape_from.pos[1]
-        elif any([self.shape_to.shape_type == i for i in ['d', 'base']]):
+        elif self.shape_to.shape_type in ['d', 'base']:
             self.begin_x = self.shape_from.pos[0]
             self.begin_y = self.shape_from.pos[1] - self.shape_from.size[0] / 2
         self.end_x = self.shape_to.pos[0]
