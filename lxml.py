@@ -33,10 +33,10 @@ class Lxml:
             if new_shape.pos == i.pos:
                 i.move(direction)
 
-    def add_connector(self, from_shape, to_shape, connector_position):
+    def add_connector(self, from_shape, to_shape):
         self.shape_id_counter += 1
 
-        c = Connector(self.shape_id_counter, from_shape, to_shape, connector_position)
+        c = Connector(self.shape_id_counter, from_shape, to_shape)
         self.connectors.append(c)
 
     def add_shape(self, master, text, direction, prev_shape=None):
