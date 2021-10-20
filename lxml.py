@@ -1,17 +1,17 @@
 import shape
-from connector import Connector
+import connector
 
 
 class Lxml:
     def __init__(self):
         self.filename = r"temp\visio\pages\page1.xml"
-        self.shapes = []
-        self.connectors = []
-        self.cords = []
+        self.shapes: [shape.Shape] = []
+        self.connectors: [connector.Connector] = []
+        self.cords: [[]] = []
         self.first_if = True
         self.shape_id_counter = 0
 
-    def generate_page_xml(self):
+    def generate_page_xml(self) -> str:
         temp = '''<?xml version='1.0' encoding='utf-8' ?>
 <PageContents xmlns='http://schemas.microsoft.com/office/visio/2012/main' xmlns:r='http://schemas.openxmlformats.org/officeDocument/2006/relationships' xml:space='preserve'>
 <Shapes>'''
@@ -27,23 +27,23 @@ class Lxml:
         with open(self.filename, 'w', encoding="utf-8") as f:
             f.write(self.generate_page_xml())
 
-    def moves(self, new_shape, direction):
+    def moves(self, new_shape: shape.Shape, direction):
         for i in self.shapes:
             i: shape.Shape
             if new_shape.pos == i.pos:
                 i.move(direction)
 
-    def add_connector(self, from_shape, to_shape):
+    def add_connector(self, from_shape: shape.Shape, to_shape: shape.Shape):
         self.shape_id_counter += 1
 
-        c = Connector(self.shape_id_counter, from_shape, to_shape)
+        c = connector.Connector(self.shape_id_counter, from_shape, to_shape)
         self.connectors.append(c)
 
-    def add_shape(self, master, text, direction, prev_shape=None):
+    def add_shape(self, master, text, direction, prev_shape: shape.Shape = None, flag_end=False) -> shape.Shape:
         self.shape_id_counter += 1
 
         if not prev_shape:
-            new_shape = shape.Shape(self.shape_id_counter, master, text, 'base', self.cords, self.shapes)
+            new_shape = shape.Shape(self.shape_id_counter, master, text, 'base', self.cords, self.shapes, flag_end=flag_end)
             new_shape.set_position(4, 10)
             self.shapes.append(new_shape)
             self.cords.append(new_shape.pos)
@@ -55,7 +55,9 @@ class Lxml:
 
         x, y = prev_shape.pos
 
-        new_shape = shape.Shape(self.shape_id_counter, master, text, direction, self.cords, self.shapes, prev_shape)
+        new_shape = shape.Shape(self.shape_id_counter, master, text, direction, self.cords, self.shapes, prev_shape, flag_end=flag_end)
+
+        self.add_connector(prev_shape, new_shape)
 
         if direction == 'l':
             new_shape.set_position(x - 1.5, y - 1)

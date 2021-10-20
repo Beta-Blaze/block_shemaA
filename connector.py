@@ -1,8 +1,9 @@
+import shape
 CONNECTOR_WIDTH = 0.25
 
 
 class Connector:
-    def __init__(self, shape_id, shape_from, shape_to):
+    def __init__(self, shape_id, shape_from: shape.Shape, shape_to: shape.Shape):
         """
         :param shape_from: Shape object
         :param shape_to: Shape object
@@ -19,7 +20,7 @@ class Connector:
         elif self.shape_to.shape_type == 'r':
             self.begin_x = self.shape_from.pos[0] + self.shape_from.size[1] / 2
             self.begin_y = self.shape_from.pos[1]
-        else:
+        elif any([self.shape_to.shape_type == i for i in ['d', 'base']]):
             self.begin_x = self.shape_from.pos[0]
             self.begin_y = self.shape_from.pos[1] - self.shape_from.size[0] / 2
         self.end_x = self.shape_to.pos[0]
@@ -49,7 +50,9 @@ class Connector:
                                                                                         <Row T='LineTo' IX='3' Del='1'/>
                                                                                     </Section>"""
 
-    def get_xml(self):
+    def get_xml(self) -> str:
+        if self.shape_from.flag_end:
+            return ""
         self.calculate_position()
         return f"""<Shape ID='{self.shape_id}' Type='Shape' Master='11'>
                         <Cell N='PinX' V='{self.pin_x}'/>
