@@ -59,15 +59,15 @@ class Parser:
         keywords = "bool char wchar_t char8_t char16_t char32_t int short long signed unsigned float double".split()
         if any([string.startswith(i) for i in keywords]):
             for keyword in keywords:
-                string = string.replace(keyword, "")
-            if re.match(r"[A-z]*?;", string.replace(" ", "")):
-                return [string.replace(" ", "").replace(";", ""), None]
+                string = string.replace(keyword, "").lstrip()
+            if re.match(r"[A-z]*?;", string):
+                return [string.rstrip(";"), None]
             initialization = re.search(r'[{].*?[}]', string)
             if initialization:
-                return [string[0:initialization.start()].replace(" ", ""), string[initialization.start()+1:initialization.end()-1] if string[initialization.start()+1:initialization.end()-1] else None]
-            if re.search(r"[A-z]*? = .*?"):
-                var = string.split("=")
-                return [string[0].replace(" ", ""), string[1].lstrip()]
+                return [string[0:initialization.start()], string[initialization.start()+1:initialization.end()-1] if string[initialization.start()+1:initialization.end()-1] else None]
+            if re.search(r"[A-z]*? = .*?", string):
+                var = string.split(" = ")
+                return [var[0], var[1].rstrip(";")]
 
 
 p = Parser()
