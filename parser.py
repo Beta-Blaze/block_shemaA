@@ -71,11 +71,11 @@ class Parser:
         if 'cout' in string:
             string = string[string[:string.index('c')].count(' '):]
             string = string[:-1].replace(' << ', ' ').replace('cout', '').replace('endl', ' \\n')
-            return string[1:].replace('"', '').replace('  ', ' ')
+            return 'Вывод ' + string[1:].replace('"', '').replace('  ', ' ')
 
         if 'cin' in string:
             string = string[:-1].split(' >> ')[1:]
-            return ' '.join(string)
+            return 'Ввод' + ' '.join(string)
         return None
 
     def find_func(self):  # TODO typedef void F(); F  fv;
