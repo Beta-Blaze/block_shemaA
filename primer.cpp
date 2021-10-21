@@ -13,6 +13,7 @@ void test(int a, char b) {
 
 int main() {
   double summ{};
+  char a[10] = ', ';
   int n{1}, a = 123;
   const double E{0.012};
   summ += f(n);
@@ -21,5 +22,11 @@ int main() {
     --n;
     summ += f(n);
   }
+
+  do {
+    n++;
+    n++;
+    --n;
+  } while (abs(f(n) - f(n + 1)) >= E);
   cout << "sum " << summ << endl;
 }
