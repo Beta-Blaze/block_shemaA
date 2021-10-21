@@ -55,7 +55,7 @@ class Parser:
 
     def parse_variable_initializations(self, string: str) -> list:
         parsed_variables = []
-        keywords = "bool char wchar_t char8_t char16_t char32_t int short long signed unsigned float double const".split()
+        keywords = "vector bool char wchar_t char8_t char16_t char32_t int short long signed unsigned float double const".split()
         if any([string.lstrip().startswith(i) for i in keywords]):
             parsed = []
             found_breaks = list(re.finditer(r"(, [A-z])[A-z]", string))
@@ -84,7 +84,6 @@ class Parser:
 
             return parsed_variables
 
-
     def parse_io(self, string: str):
         if 'cout' in string:
             string = string[string[:string.index('c')].count(' '):]
@@ -97,13 +96,43 @@ class Parser:
         return None
 
     def find_func(self):  # TODO typedef void F(); F  fv;
-        keywords = "bool char wchar_t char8_t char16_t char32_t int float double void".split()
+        keywords = "vector bool char wchar_t char8_t char16_t char32_t int float double void".split()
         for s in range(len(self.data)):
             if any([self.data[s].startswith(i) for i in keywords]) and '{' in self.data[s] and '}' not in self.data[s]:
                 index = s
                 name = self.data[s][self.data[s].index(' ') + 1: self.data[s].index('(')]
             elif self.data[s] == '}':
                 self.funcs[name] = self.data[index + 1: s]
+
+    def parse_while(self):
+        ...
+
+    def parse_for(self, string):
+        if re.match(r" *?for", string):
+            string = string[:-3].lstrip(' ')[5:]
+            if ':' in string:
+                return f"{string.split(' ')[1]} ({string.split(' ')[-1]})"
+            else:
+                string = string.split('; ')
+                perem = self.parse_variable_initializations(string[0])[0]
+                if not string[2]:
+                    value = ''
+                elif '--' in string[2]:
+                    value = -1
+                elif '++' in string[2]:
+                    value = 1
+                else:
+                    s = string[2].split()
+                    if s[1] != '=':
+                        value = s[1][0] + s[2]
+                        value.replace('+', '')
+                    else:
+                        value = s[3] + s[4]
+                        value.replace('+', '')
+                return f'{perem[0]}={perem[1]} ({value}) {string[1]}'
+
+    def parse_if(self):
+        ...
 
     def replace_modification(self):
         for i in range(len(self.data)):
@@ -130,9 +159,10 @@ p.prepare()
 p.define()
 # print(p.parse_defines_with_brackets)
 # print(p.parse_defines_without_brackets)
-print(p.parse_variable_initializations("double ada{};"))
+# print(p.parse_variable_initializations("double ada{};"))
 p.replace_modification()
 p.find_func()
 # print(*p.funcs['main'], sep='\n')
-print(p.parse_io('  cin >> a >> b >> c >> d;'))
-print(p.parse_io('  cout << "sum " << summ << endl;'))
+# print(p.parse_io('  cin >> a >> b >> c >> d;'))
+# print(p.parse_io('  cout << "sum " << summ << endl;'))
+print(p.parse_for('  for (int i : arr) {'))

@@ -28,5 +28,29 @@ int main() {
     n++;
     --n;
   } while (abs(f(n) - f(n + 1)) >= E);
+
+  for (int i{10}; i <= 23; --i) {
+    n++;
+    --n;
+  }
+  for (; i <= 23; --i) {
+    n++;
+    --n;
+  }
+
+  if (true) {
+    n++;
+  } else if (true) {
+    n++;
+  }
+
+  else {
+    n++;
+  }
+
+  for (int i : arr) {
+    n++;
+    --n;
+  }
   cout << "sum " << summ << endl;
 }
