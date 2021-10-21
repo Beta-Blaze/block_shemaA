@@ -7,7 +7,7 @@ using namespace std;
 #define f1 123123123
 
 void test(int a, char b) {
-  cin >> a;
+  cin >> a >> b >> c >> d;
   cout << b;
 }
 

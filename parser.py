@@ -67,6 +67,17 @@ class Parser:
                 var = string.split(" = ")
                 return [var[0], var[1].rstrip(";")]
 
+    def parse_io(self, string: str):
+        if 'cout' in string:
+            string = string[string[:string.index('c')].count(' '):]
+            string = string[:-1].replace(' << ', ' ').replace('cout', '').replace('endl', ' \\n')
+            return string[1:].replace('"', '').replace('  ', ' ')
+
+        if 'cin' in string:
+            string = string[:-1].split(' >> ')[1:]
+            return ' '.join(string)
+        return None
+
     def find_func(self):  # TODO typedef void F(); F  fv;
         keywords = "bool char wchar_t char8_t char16_t char32_t int float double void".split()
         for s in range(len(self.data)):
@@ -104,4 +115,6 @@ p.define()
 # print(p.parse_variables(" int a;"))
 p.replace_modification()
 p.find_func()
-print(*p.funcs['main'], sep='\n')
+# print(*p.funcs['main'], sep='\n')
+print(p.parse_io('  cin >> a >> b >> c >> d;'))
+print(p.parse_io('  cout << "sum " << summ << endl;'))
