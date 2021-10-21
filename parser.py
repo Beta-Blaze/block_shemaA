@@ -6,16 +6,14 @@ class Parser:
     def __init__(self, data=''):
         self.data = data
         self.defines = []
-        self.parse_defines_with_brackets = []
-        self.parse_defines_without_brackets = []
+        self.funcs = {}
+        self.parse_defines_with_brackets = {}
+        self.parse_defines_without_brackets = {}
 
     def read(self, name):
         subprocess.Popen(f".\\helpers\\formatter.exe --i --style=Google {name}")
         with open(name) as f:
             self.data = f.readlines()
-
-    def normalize(self):
-        ...
 
     def prepare(self):
         emp = []
@@ -33,7 +31,7 @@ class Parser:
             if i[i.index(' ') - 1] != ')':
                 name = i.split()[0]
                 temp = ' '.join(i.split()[1:])
-                self.parse_defines_without_brackets.append([name, temp])
+                self.parse_defines_without_brackets[name] = temp
                 continue
             perem = i[i.index('(') + 1: i.index(')')]
             name = i[: i.index('(')]
@@ -53,7 +51,7 @@ class Parser:
                 temp.insert(0, i[i2[1]:])
                 i = i[:i2[0]]
             temp.insert(0, i)
-            self.parse_defines_with_brackets.append([name, perem, temp])
+            self.parse_defines_with_brackets[name] = [temp]
 
     def parse_variables(self, string: str) -> list[str, str | None] | None:
         keywords = "bool char wchar_t char8_t char16_t char32_t int short long signed unsigned float double".split()
@@ -69,6 +67,15 @@ class Parser:
                 var = string.split("=")
                 return [string[0].replace(" ", ""), string[1].lstrip()]
 
+    def find_func(self):  #TODO typedef void F(); F  fv;
+        keywords = "bool char wchar_t char8_t char16_t char32_t int float double void".split()
+        for s in range(len(self.data)):
+            if any([self.data[s].startswith(i) for i in keywords]) and '{' in self.data[s] and '}' not in self.data[s]:
+                index = s
+                name = self.data[s][self.data[s].index(' ') + 1: self.data[s].index('(')]
+            elif self.data[s] == '}':
+                self.funcs[name] = self.data[index: s + 1]
+
 
 p = Parser()
 p.read('primer.cpp')
@@ -77,4 +84,6 @@ p.prepare()
 p.define()
 # print(p.parse_defines_with_brackets)
 # print(p.parse_defines_without_brackets)
-print(p.parse_variables("int a;"))
+# print(p.parse_variables("int a;"))
+p.find_func()
+print(p.funcs)
