@@ -53,19 +53,37 @@ class Parser:
             temp.insert(0, i)
             self.parse_defines_with_brackets[name] = [temp]
 
-    def parse_variables(self, string: str) -> list[str, str | None] | None:
+    def parse_variable_initializations(self, string: str) -> list:
+        parsed_variables = []
         keywords = "bool char wchar_t char8_t char16_t char32_t int short long signed unsigned float double const".split()
         if any([string.lstrip().startswith(i) for i in keywords]):
-            for keyword in keywords:
-                string = string.replace(keyword, "").lstrip()
-            if re.match(r"\w*?;", string):
-                return [string.rstrip(";"), None]
-            initialization = re.search(r'[{].*?[}]', string)
-            if initialization:
-                return [string[0:initialization.start()], string[initialization.start()+1:initialization.end()-1] if string[initialization.start()+1:initialization.end()-1] else None]
-            if re.search(r"\w*? = .*?", string):
-                var = string.split(" = ")
-                return [var[0], var[1].rstrip(";")]
+            parsed = []
+            found_breaks = list(re.finditer(r"(, [A-z])[A-z]", string))
+            first_variable_end = found_breaks[0].span()[0] if len(found_breaks) else len(string)
+            first_variable = string[:first_variable_end] + ";"
+            parsed.append(first_variable)
+            type_hint = first_variable.split()[0]
+            for index, semicolon in enumerate(found_breaks):
+                if index + 1 < len(found_breaks):
+                    print(found_breaks[index + 1])
+                    parsed.append(type_hint + " " + string[semicolon.span()[0] + 2:found_breaks[index + 1].span()[0]] + ";")
+                else:
+                    parsed.append(string[semicolon.span()[0] + 2:len(string) - 1] + ";")
+
+            for variable in parsed:
+                for keyword in keywords:
+                    variable = variable.replace(keyword, "").lstrip()
+                if re.match(r"\w*?;", variable):
+                    parsed_variables.append([variable.rstrip(";"), None])
+                initialization = re.search(r'[{].*?[}]', variable)
+                if initialization:
+                    parsed_variables.append([variable[0:initialization.start()], variable[initialization.start() + 1:initialization.end() - 1] if variable[initialization.start() + 1:initialization.end() - 1] else 0])
+                if re.search(r"\w*? = .*?", variable):
+                    var_info = variable.split(" = ")
+                    parsed_variables.append([var_info[0], var_info[1].rstrip(";")])
+
+            return parsed_variables
+
 
     def parse_io(self, string: str):
         if 'cout' in string:
@@ -75,7 +93,7 @@ class Parser:
 
         if 'cin' in string:
             string = string[:-1].split(' >> ')[1:]
-            return 'Ввод' + ' '.join(string)
+            return 'Ввод ' + ' '.join(string)
         return None
 
     def find_func(self):  # TODO typedef void F(); F  fv;
@@ -112,7 +130,7 @@ p.prepare()
 p.define()
 # print(p.parse_defines_with_brackets)
 # print(p.parse_defines_without_brackets)
-# print(p.parse_variables(" int a;"))
+print(p.parse_variable_initializations("double ada{};"))
 p.replace_modification()
 p.find_func()
 # print(*p.funcs['main'], sep='\n')
