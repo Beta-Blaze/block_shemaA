@@ -140,7 +140,7 @@ class Parser:
         opened_brackets = 0
         counter = start_string + 1
         data = {True: [], False: [], "Depth": 0}
-        condition = re.match(r"\s*if \((.*?)\) {", strings[start_string])
+        condition = re.search(r"^(?!else)\s*if \((.*?)\) {", strings[start_string])
         if condition:
             data['Condition'] = condition.group(1)
             while counter < len(strings):
@@ -160,17 +160,21 @@ class Parser:
                 data[True].append(strings[counter])
                 data["Depth"] += 1
                 counter += 1
-        if counter >= len(strings):
-            pass
-        elif "else" in strings[counter]:
+        if "else" in strings[counter]:
             false_depth = 0
-            counter += 1
+            opened_brackets -= 1
+            else_if_condition = re.search(r"if \((.*?)\) {", strings[counter])
+            if not else_if_condition:
+                counter += 1
             while counter < len(strings):
                 if re.search(r"if \((.*?)\) {", strings[counter]):
+                    strings[counter] = strings[counter].replace("} else ", "")
                     inner_block = self.parse_if(counter, strings)
                     counter = inner_block[1]
                     data[False].append(inner_block[0])
                     data["Depth"] += inner_block[0]['Depth'] + 1
+                    if else_if_condition:
+                        break
                     continue
                 if '{' in strings[counter]:
                     opened_brackets += 1
@@ -183,6 +187,7 @@ class Parser:
                 counter += 1
                 false_depth += 1
             data["Depth"] = max(data["Depth"], false_depth)
+        print(data)
         return data, counter + 1
 
     def replace_modification(self):
