@@ -38,32 +38,31 @@ def draw(string, last, vector='d'):
 
 def draw_if(ifs, vector='d'):
     global last
+    deep = [0, 0]
     last = lx.add_shape('IF', ifs['Condition'], vector, last)
-    last_if = last
-    fitst = True
-    for i in ifs[True]:
-        if type(i) == dict:
-            last = last_if
-            last.pos[1] = last.pos[1] - ifs["Depth"]
-            draw_if(i, vector='r')
-        else:
-            if fitst:
-                last = draw(i, last, 'r')
-                fitst = False
+    block_if = last
+    for flag in [True, False]:
+        first = True
+        for i in ifs[flag]:
+            if type(i) == dict:
+                if first:
+                    deep[0 if flag else 1] += draw_if(i, vector=('r' if flag else 'l'))
+                    first = False
+                else:
+                    deep[0 if flag else 1] += draw_if(i)
             else:
-                last = draw(i, last)
-    fitst = True
-    for i in ifs[False]:
-        if type(i) == dict:
-            last = last_if
-            last.pos[1] = last.pos[1] - ifs["Depth"]
-            draw_if(i, vector='l')
-        else:
-            if fitst:
-                last = draw(i, last_if, 'l')
-                fitst = False
-            else:
-                last = draw(i, last)
+                if first:
+                    last = draw(i, (last if flag else block_if), ('r' if flag else 'l'))
+                    first = False
+                else:
+                    last = draw(i, last)
+            deep[0 if flag else 1] += 1
+
+    x, y = block_if.pos[0], block_if.pos[1] - max(deep)
+    last = lx.add_shape('INPUT', 'QWE', vector, last)
+    print(max(deep), ifs)
+    last.set_position(x, y)
+    return max(deep)
 
 
 p = parser.Parser()

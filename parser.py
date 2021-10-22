@@ -203,18 +203,18 @@ class Parser:
                 self.data[i] = ' ' * n + emp[0] + ' = ' + emp[0] + ' ' + init.group(1)[0] + ' ' + emp[1] + ';'
 
 
-p = Parser()
-p.read('primer.cpp')
-p.prepare()
+# p = Parser()
+# p.read('primer.cpp')
+# p.prepare()
 # print(*p.data, sep='\n')
 # p.define()
 # print(p.parse_defines_with_brackets)
 # print(p.parse_defines_without_brackets)
 # print(p.parse_variable_initializations("double ada{};"))
 # p.replace_modification()
-p.find_func()
+# p.find_func()
 # print(*p.funcs['main'], sep='\n')
 # print(p.parse_io('  cin >> a >> b >> c >> d;'))
 # print(p.parse_io('  cout << "sum " << summ << endl;'))
 # print(p.parse_for('  for (int i : arr) {'))
-print(p.parse_if(1, p.funcs['main']))
+# print(p.parse_if(1, p.funcs['main']))
