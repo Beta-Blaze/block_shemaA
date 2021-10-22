@@ -157,6 +157,7 @@ class Parser:
             return data, counter
         condition = re.search(r"^(?!else)\s*if \((.*?)\) {", strings[start_string])
         if condition:
+            opened_brackets += 1
             data['Condition'] = condition.group(1)
             while counter < len(strings):
                 if re.match(r"\s*?if \((.*?)\) {", strings[counter]):
