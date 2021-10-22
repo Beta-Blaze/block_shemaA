@@ -54,7 +54,7 @@ class Connector:
         if self.shape_from.flag_end or self.shape_to.flag_end:
             return ""
         self.calculate_position()
-        return f"""<Shape ID='{self.shape_id}' Type='Shape' Master='13'>
+        return f"""<Shape ID='{self.shape_id}' Type='Shape' Master='12'>
                         <Cell N='PinX' V='{self.pin_x}'/>
                         <Cell N='PinY' V='{self.pin_y}'/>
                         <Cell N='Width' V='{self.width}'/>
