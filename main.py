@@ -97,9 +97,11 @@ for stringn in range(len(p.funcs[funk_name])):
             continue
         else:
             sdvig = 0
-    string: str = p.funcs['main'][stringn].replace(' % ', ' ост ')
 
-    ifs = p.parse_if(stringn, p.funcs['main'])
+    p.funcs[funk_name][stringn] = p.funcs[funk_name][stringn].replace(' % ', ' ост ').replace(' == ', ' = ')
+    string: str = p.funcs[funk_name][stringn]
+
+    ifs = p.parse_if(stringn, p.funcs[funk_name])
     if ifs[0][True] or ifs[0][False]:
         sdvig = ifs[1]
         draw_if(ifs[0])
