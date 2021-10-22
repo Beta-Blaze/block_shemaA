@@ -21,27 +21,50 @@ SHAPE_SIZE = {
     "MULTI_PAGE_CONNECTOR": [0.4724409448818898, 0.3937007874015749]
 }
 
-id_shape_counter = 1
-
 
 class Shape:
-    def __init__(self, master, text=""):
-        global id_shape_counter
+    def __init__(self, shape_id, master: str, text='', shape_type='', cords: [[]] = None, shapes: [] = None, from_s=None, flag_end=False):
         if master not in SHAPE_TYPES:
             print("Illegal shape type")
             exit()
-        self.id = id_shape_counter
-        id_shape_counter += 1
+        self.shape_id = shape_id
         self.master = SHAPE_TYPES[master]
         self.text = text
         self.pos = []
         self.size = SHAPE_SIZE[master]
+        self.to_s: [Shape] = []
+        self.from_s: Shape = from_s
+        self.shape_type = shape_type
+        self.cords = cords
+        self.shapes: [Shape] = shapes
+        self.flag_end = flag_end
 
-    def set_position(self, pos):
-        self.pos = pos
+    def set_position(self, x, y) -> []:
+        self.pos = [x, y]
 
-    def get_xml(self):
-        return f"""<Shape ID='{self.id}' Type='Shape' Master='{self.master}'><Cell N='PinX' V='{self.pos[0]}'/>
+    def move(self, vector, direction=''):
+        if self.shape_type == "base":
+            return
+
+        if vector == 'r':
+            self.pos[0] += 1.5
+
+        if vector == 'l':
+            self.pos[0] -= 1.5
+
+        for i in self.shapes:
+            i: Shape
+            if self.pos == i.pos and self != i:
+                i.move(vector)
+
+        if not direction or direction == 'd':
+            for i in self.to_s:
+                i.move(vector, 'd')
+        if not direction or direction == 'a':
+            self.from_s.move(vector, 'a')
+
+    def get_xml(self) -> str:
+        return f"""<Shape ID='{self.shape_id}' Type='Shape' Master='{self.master}'><Cell N='PinX' V='{self.pos[0]}'/>
         <Cell N='PinY' V='{self.pos[1]}'/>
         <Text>{self.text}</Text></Shape>
         """
