@@ -31,6 +31,8 @@ def draw(string, last, vector='d'):
         last = lx.add_shape('MODIFICATION',  p.parse_for(string), vector, last)
     elif not emp or emp == 'do':
         ...
+    elif funk_name == 'main' and 'return 0' in string:
+        ...
     else:
         last = lx.add_shape('PROCESS', string.replace(';', '').lstrip(), vector, last)
     return last
@@ -69,6 +71,7 @@ def draw_if(ifs, vector='d'):
 
 p = parser.Parser()
 p.read('primer.cpp')
+funk_name = 'main'
 p.prepare()
 p.define()
 
@@ -76,17 +79,22 @@ p.define()
 # print(p.parse_defines_without_brackets)
 
 p.replace_modification()
+p.parse_match_funk()
 p.find_func()
 
 sdvig = 0
 
-for stringn in range(len(p.funcs['main'][:-1])):
+if not p.funcs.get(funk_name, False):
+    print(f'Функции {funk_name} нет в коде')
+    exit()
+
+for stringn in range(len(p.funcs[funk_name])):
     if sdvig:
         if sdvig != stringn:
             continue
         else:
             sdvig = 0
-    string: str = p.funcs['main'][stringn]
+    string: str = p.funcs['main'][stringn].replace(' % ', ' ост ')
 
     ifs = p.parse_if(stringn, p.funcs['main'])
     if ifs[0][True] or ifs[0][False]:

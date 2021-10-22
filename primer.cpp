@@ -1,12 +1,23 @@
-#include <cmath>
 #include <iostream>
 using namespace std;
 int main() {
-  int sum_cubes{};
-  for (int i{100}; i < 1000; i++) {
-    sum_cubes = pow(i % 10, 3) + pow(i / 10 % 10, 3) + pow(i / 100, 3);
-    if (i == sum_cubes) {
-      cout << i << endl;
+  for (int i{1000}; i <= 9999; i++) {
+    if (i % 2 == 0 and i % 7 == 0 and i % 11 == 0) {
+      int num = i, n_count{}, valid[10]{}, summa{};
+      for (; num > 0; n_count = n_count + 10) {
+        valid[num % 10] = 1;
+        summa += num % 10;
+        num /= pow(a, 12);
+      }
+      if (summa == 30) {
+        int count{};
+        for (int iter : valid) {
+          if (iter == 1) count += 1;
+        }
+        if (count == pow(M_E, a / (b + c))) {
+          cout << i << endl;
+        }
+      }
     }
   }
   return 0;
