@@ -65,7 +65,7 @@ class Parser:
             type_hint = first_variable.split()[0]
             for index, semicolon in enumerate(found_breaks):
                 if index + 1 < len(found_breaks):
-                    print(found_breaks[index + 1])
+                    # print(found_breaks[index + 1])
                     parsed.append(type_hint + " " + string[semicolon.span()[0] + 2:found_breaks[index + 1].span()[0]] + ";")
                 else:
                     parsed.append(string[semicolon.span()[0] + 2:len(string) - 1] + ";")
@@ -110,6 +110,17 @@ class Parser:
             string = string.replace(' {', '').replace(';', ' ').split(' (')
             return string[1]
 
+    def parse_match_funk(self):
+        for string in range(len(self.data)):
+            init = re.finditer(r".*?(pow\(.*?,.*?\))", self.data[string])
+            for i in init:
+                i = i.group(1)
+                if i.count('(') != i.count(')'):
+                    i = i + ')'
+                gr = i
+                i = i.replace('pow(', '')[:-1].split(', ')
+                self.data[string] = self.data[string].replace(gr, ' ^ '.join(i))
+
     def parse_for(self, string):
         if re.match(r" *?for ", string):
             string = string[:-3].lstrip(' ')[5:]
@@ -118,22 +129,24 @@ class Parser:
             else:
                 string = string.split('; ')
                 pars = self.parse_variable_initializations(string[0])
-                perem = pars[0] if pars else ['', '']
                 if not string[2]:
                     value = ''
                 elif '--' in string[2]:
                     value = -1
+                    perem = pars[0] if pars else [string[2].replace('--', ''), '']
                 elif '++' in string[2]:
                     value = 1
+                    perem = pars[0] if pars else [string[2].replace('++', ''), '']
                 else:
                     s = string[2].split()
+                    perem = pars[0] if pars else [s[0], '']
                     if s[1] != '=':
                         value = s[1][0] + s[2]
                         value.replace('+', '')
                     else:
                         value = s[3] + s[4]
                         value.replace('+', '')
-                return f'{perem[0]}{"=" if perem[0] else ""}{perem[1]} ({value}) {string[1]}'.replace('<', '&lt;')
+                return f'{perem[0]}{"=" if perem[1] else ""}{perem[1]} ({str(value).replace("+", "")}) {string[1]}'.replace('<', '&lt;')
         return None
 
     def parse_if(self, start_string, strings):
@@ -144,6 +157,7 @@ class Parser:
             return data, counter
         condition = re.search(r"^(?!else)\s*if \((.*?)\) {", strings[start_string])
         if condition:
+            opened_brackets += 1
             data['Condition'] = condition.group(1)
             while counter < len(strings):
                 if re.match(r"\s*?if \((.*?)\) {", strings[counter]):
