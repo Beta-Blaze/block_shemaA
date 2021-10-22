@@ -38,7 +38,7 @@ def draw(string, last, vector='d'):
 
 def draw_if(ifs, vector='d'):
     global last
-    deep = [0, 0]
+    deep = [1, 1]
     last = lx.add_shape('IF', ifs['Condition'], vector, last)
     block_if = last
     for flag in [True, False]:
@@ -46,6 +46,7 @@ def draw_if(ifs, vector='d'):
         for i in ifs[flag]:
             if type(i) == dict:
                 if first:
+                    last = block_if
                     deep[0 if flag else 1] += draw_if(i, vector=('r' if flag else 'l'))
                     first = False
                 else:
@@ -59,8 +60,9 @@ def draw_if(ifs, vector='d'):
             deep[0 if flag else 1] += 1
 
     x, y = block_if.pos[0], block_if.pos[1] - max(deep)
-    last = lx.add_shape('INPUT', 'QWE', vector, last)
-    print(max(deep), ifs)
+    # print(deep, block_if.text, block_if.pos, [x, y])
+    last = lx.add_shape('INPUT', 'QWE', 'd', last, flag_end=True)
+    lx.cords.remove(last.pos)
     last.set_position(x, y)
     return max(deep)
 
@@ -78,7 +80,7 @@ p.find_func()
 
 sdvig = 0
 
-for stringn in range(len(p.funcs['main'])):
+for stringn in range(len(p.funcs['main'][:-1])):
     if sdvig:
         if sdvig != stringn:
             continue

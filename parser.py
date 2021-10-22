@@ -20,9 +20,9 @@ class Parser:
         rubbish = ['#include', 'namespace']
         for i in self.data:
             if not any([r in i for r in rubbish]):
-                emp.append(i[:-1])
+                emp.append(i.rstrip('\n'))
             if 'define' in i:
-                self.defines.append(i[:-1])
+                self.defines.append(i.rstrip('\n'))
         self.data = emp
 
     def define(self):
@@ -140,6 +140,8 @@ class Parser:
         opened_brackets = 0
         counter = start_string + 1
         data = {True: [], False: [], "Depth": 0}
+        if counter >= len(strings):
+            return data, counter
         condition = re.search(r"^(?!else)\s*if \((.*?)\) {", strings[start_string])
         if condition:
             data['Condition'] = condition.group(1)
@@ -187,7 +189,6 @@ class Parser:
                 counter += 1
                 false_depth += 1
             data["Depth"] = max(data["Depth"], false_depth)
-        print(data)
         return data, counter + 1
 
     def replace_modification(self):
