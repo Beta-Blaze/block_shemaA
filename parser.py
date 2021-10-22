@@ -104,11 +104,14 @@ class Parser:
             elif self.data[s] == '}':
                 self.funcs[name] = self.data[index + 1: s]
 
-    def parse_while(self):
-        ...
+    def parse_while(self, string):
+        string = string.replace('}', '')
+        if re.match(r" *?while ", string):
+            string = string.replace(' {', '').replace(';', ' ').split(' (')
+            return string[1]
 
     def parse_for(self, string):
-        if re.match(r" *?for", string):
+        if re.match(r" *?for ", string):
             string = string[:-3].lstrip(' ')[5:]
             if ':' in string:
                 return f"{string.split(' ')[1]} ({string.split(' ')[-1]})"
@@ -130,6 +133,7 @@ class Parser:
                         value = s[3] + s[4]
                         value.replace('+', '')
                 return f'{perem[0]}={perem[1]} ({value}) {string[1]}'
+        return None
 
     def parse_if(self, start_string, strings):
         opened_brackets = 0
