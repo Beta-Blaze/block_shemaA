@@ -19,7 +19,7 @@ class Parser:
         emp = []
         rubbish = ['#include', 'namespace']
         for i in self.data:
-            if not any([r in i for r in rubbish]) and i != '\n':
+            if not any([r in i for r in rubbish]):
                 emp.append(i[:-1])
             if 'define' in i:
                 self.defines.append(i[:-1])
@@ -131,8 +131,48 @@ class Parser:
                         value.replace('+', '')
                 return f'{perem[0]}={perem[1]} ({value}) {string[1]}'
 
-    def parse_if(self):
-        ...
+    def parse_if(self, start_string, strings):
+        opened_brackets = 0
+        counter = start_string + 1
+        data = {True: [], False: []}
+        condition = re.match(r"\s*if \((.*?)\) {", strings[start_string])
+        if condition:
+            data['Condition'] = condition.group(1)
+            while counter < len(strings):
+                if re.match(r"\s*?if \((.*?)\) {", strings[counter]):
+                    inner_block = self.parse_if(counter, strings)
+                    counter = inner_block[1]
+                    data[True].append(inner_block[0])
+                    continue
+                if '{' in strings[counter]:
+                    opened_brackets += 1
+                if '}' in strings[counter]:
+                    if opened_brackets:
+                        opened_brackets -= 1
+                    if not opened_brackets:
+                        break
+                data[True].append(strings[counter])
+                counter += 1
+        if "else" in strings[counter]:
+            counter += 1
+            while counter < len(strings):
+                if re.search(r"if \((.*?)\) {", strings[counter]):
+                    inner_block = self.parse_if(counter, strings)
+                    counter = inner_block[1]
+                    data[False].append(inner_block[0])
+                    continue
+                if '{' in strings[counter]:
+                    opened_brackets += 1
+                if '}' in strings[counter]:
+                    if opened_brackets:
+                        opened_brackets -= 1
+                    if not opened_brackets:
+                        break
+                if strings[counter] == '      if (c) {':
+                    pass
+                data[False].append(strings[counter])
+                counter += 1
+        return data, counter + 1
 
     def replace_modification(self):
         for i in range(len(self.data)):
@@ -162,7 +202,8 @@ p.define()
 # print(p.parse_variable_initializations("double ada{};"))
 p.replace_modification()
 p.find_func()
-# print(*p.funcs['main'], sep='\n')
+print(*p.funcs['main'], sep='\n')
 # print(p.parse_io('  cin >> a >> b >> c >> d;'))
 # print(p.parse_io('  cout << "sum " << summ << endl;'))
 print(p.parse_for('  for (int i : arr) {'))
+print(p.parse_if(23, p.funcs['main']))
