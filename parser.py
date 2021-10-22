@@ -51,14 +51,14 @@ class Parser:
                 temp.insert(0, i[i2[1]:])
                 i = i[:i2[0]]
             temp.insert(0, i)
-            self.parse_defines_with_brackets[name] = [temp]
+            self.parse_defines_with_brackets[name] = temp
 
     def parse_variable_initializations(self, string: str) -> list:
         parsed_variables = []
         keywords = "vector bool char wchar_t char8_t char16_t char32_t int short long signed unsigned float double const".split()
         if any([string.lstrip().startswith(i) for i in keywords]):
             parsed = []
-            found_breaks = list(re.finditer(r"(, [A-z])[A-z]", string))
+            found_breaks = list(re.finditer(r"(, [A-z])", string))
             first_variable_end = found_breaks[0].span()[0] if len(found_breaks) else len(string)
             first_variable = string[:first_variable_end] + ";"
             parsed.append(first_variable)
@@ -87,7 +87,7 @@ class Parser:
     def parse_io(self, string: str):
         if 'cout' in string:
             string = string[string[:string.index('c')].count(' '):]
-            string = string[:-1].replace(' << ', ' ').replace('cout', '').replace('endl', ' \\n')
+            string = string[:-1].replace(' << ', ' ').replace('cout', '').replace('endl', '')
             return 'Вывод ' + string[1:].replace('"', '').replace('  ', ' ')
 
         if 'cin' in string:
@@ -114,10 +114,11 @@ class Parser:
         if re.match(r" *?for ", string):
             string = string[:-3].lstrip(' ')[5:]
             if ':' in string:
-                return f"{string.split(' ')[1]} ({string.split(' ')[-1]})"
+                return f"{string.split(' ')[1]} ({string.split(' ')[-1]})".replace('<', '&lt;')
             else:
                 string = string.split('; ')
-                perem = self.parse_variable_initializations(string[0])[0]
+                pars = self.parse_variable_initializations(string[0])
+                perem = pars[0] if pars else ['', '']
                 if not string[2]:
                     value = ''
                 elif '--' in string[2]:
@@ -132,7 +133,7 @@ class Parser:
                     else:
                         value = s[3] + s[4]
                         value.replace('+', '')
-                return f'{perem[0]}={perem[1]} ({value}) {string[1]}'
+                return f'{perem[0]}{"=" if perem[0] else ""}{perem[1]} ({value}) {string[1]}'.replace('<', '&lt;')
         return None
 
     def parse_if(self, start_string, strings):
@@ -157,7 +158,9 @@ class Parser:
                         break
                 data[True].append(strings[counter])
                 counter += 1
-        if "else" in strings[counter]:
+        if counter >= len(strings):
+            pass
+        elif "else" in strings[counter]:
             counter += 1
             while counter < len(strings):
                 if re.search(r"if \((.*?)\) {", strings[counter]):
@@ -172,8 +175,6 @@ class Parser:
                         opened_brackets -= 1
                     if not opened_brackets:
                         break
-                if strings[counter] == '      if (c) {':
-                    pass
                 data[False].append(strings[counter])
                 counter += 1
         return data, counter + 1
@@ -196,18 +197,18 @@ class Parser:
                 self.data[i] = ' ' * n + emp[0] + ' = ' + emp[0] + ' ' + init.group(1)[0] + ' ' + emp[1] + ';'
 
 
-p = Parser()
-p.read('primer.cpp')
-p.prepare()
+# p = Parser()
+# p.read('primer.cpp')
+# p.prepare()
 # print(*p.data, sep='\n')
-p.define()
+# p.define()
 # print(p.parse_defines_with_brackets)
 # print(p.parse_defines_without_brackets)
 # print(p.parse_variable_initializations("double ada{};"))
-p.replace_modification()
-p.find_func()
-print(*p.funcs['main'], sep='\n')
+# p.replace_modification()
+# p.find_func()
+# print(*p.funcs['main'], sep='\n')
 # print(p.parse_io('  cin >> a >> b >> c >> d;'))
 # print(p.parse_io('  cout << "sum " << summ << endl;'))
-print(p.parse_for('  for (int i : arr) {'))
-print(p.parse_if(23, p.funcs['main']))
+# print(p.parse_for('  for (int i : arr) {'))
+# print(p.parse_if(23, p.funcs['main']))
