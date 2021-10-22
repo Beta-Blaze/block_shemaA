@@ -139,7 +139,7 @@ class Parser:
     def parse_if(self, start_string, strings):
         opened_brackets = 0
         counter = start_string + 1
-        data = {True: [], False: []}
+        data = {True: [], False: [], "Depth": 0}
         condition = re.match(r"\s*if \((.*?)\) {", strings[start_string])
         if condition:
             data['Condition'] = condition.group(1)
@@ -148,6 +148,7 @@ class Parser:
                     inner_block = self.parse_if(counter, strings)
                     counter = inner_block[1]
                     data[True].append(inner_block[0])
+                    data["Depth"] += inner_block[0]['Depth'] + 1
                     continue
                 if '{' in strings[counter]:
                     opened_brackets += 1
@@ -157,16 +158,19 @@ class Parser:
                     if not opened_brackets:
                         break
                 data[True].append(strings[counter])
+                data["Depth"] += 1
                 counter += 1
         if counter >= len(strings):
             pass
         elif "else" in strings[counter]:
+            false_depth = 0
             counter += 1
             while counter < len(strings):
                 if re.search(r"if \((.*?)\) {", strings[counter]):
                     inner_block = self.parse_if(counter, strings)
                     counter = inner_block[1]
                     data[False].append(inner_block[0])
+                    data["Depth"] += inner_block[0]['Depth'] + 1
                     continue
                 if '{' in strings[counter]:
                     opened_brackets += 1
@@ -177,6 +181,8 @@ class Parser:
                         break
                 data[False].append(strings[counter])
                 counter += 1
+                false_depth += 1
+            data["Depth"] = max(data["Depth"], false_depth)
         return data, counter + 1
 
     def replace_modification(self):
@@ -197,18 +203,18 @@ class Parser:
                 self.data[i] = ' ' * n + emp[0] + ' = ' + emp[0] + ' ' + init.group(1)[0] + ' ' + emp[1] + ';'
 
 
-# p = Parser()
-# p.read('primer.cpp')
-# p.prepare()
+p = Parser()
+p.read('primer.cpp')
+p.prepare()
 # print(*p.data, sep='\n')
 # p.define()
 # print(p.parse_defines_with_brackets)
 # print(p.parse_defines_without_brackets)
 # print(p.parse_variable_initializations("double ada{};"))
 # p.replace_modification()
-# p.find_func()
+p.find_func()
 # print(*p.funcs['main'], sep='\n')
 # print(p.parse_io('  cin >> a >> b >> c >> d;'))
 # print(p.parse_io('  cout << "sum " << summ << endl;'))
 # print(p.parse_for('  for (int i : arr) {'))
-# print(p.parse_if(23, p.funcs['main']))
+print(p.parse_if(1, p.funcs['main']))

@@ -43,6 +43,8 @@ def draw_if(ifs, vector='d'):
     fitst = True
     for i in ifs[True]:
         if type(i) == dict:
+            last = last_if
+            last.pos[1] = last.pos[1] - ifs["Depth"]
             draw_if(i, vector='r')
         else:
             if fitst:
@@ -53,6 +55,8 @@ def draw_if(ifs, vector='d'):
     fitst = True
     for i in ifs[False]:
         if type(i) == dict:
+            last = last_if
+            last.pos[1] = last.pos[1] - ifs["Depth"]
             draw_if(i, vector='l')
         else:
             if fitst:

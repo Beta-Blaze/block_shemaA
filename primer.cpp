@@ -10,9 +10,22 @@ void test(int a, char b) {
 int main() {
   cout << "start " << endl;
   if (a) {
+    n--;
     n++;
+    n++;
+    if (a) {
+      n--;
+      n++;
+      n++;
+      if (a) {
+        n--;
+        n++;
+        n++;
+      }
+    }
   } else {
     n--;
+    n++;
   }
   cout << "stop " << endl;
 }
