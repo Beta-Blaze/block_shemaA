@@ -1,5 +1,6 @@
-import vsdx, lxml, shape, connector, parser, re
-
+import parser
+from visio import shape, lxml
+from visio.vsdx import Vsdx
 
 # def replace_define(string: str, p: parser.Parser()):
 #     for i in p.parse_defines_with_brackets:
@@ -9,7 +10,7 @@ import vsdx, lxml, shape, connector, parser, re
 #             string = string.replace(f'{i}({perem})', perem.join(p.parse_defines_with_brackets[i]))
 #     return string
 
-v = vsdx.Vsdx("new.vsdx")
+v = Vsdx("new.vsdx")
 lx = lxml.Lxml()
 
 

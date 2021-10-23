@@ -1,7 +1,7 @@
-from vsdx import Vsdx
-from lxml import Lxml
+from visio.vsdx import Vsdx
+from visio.lxml import Lxml
 
-v = Vsdx("new.vsdx")
+v = Vsdx("../new.vsdx")
 
 lx = Lxml()
 # my_shape1 = lx.add_shape(Shape("PROCESS", "1"), 'd')

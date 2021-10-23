@@ -1,10 +1,10 @@
-import shape
-import connector
+from visio import shape
+from visio import connector
 
 
 class Lxml:
     def __init__(self):
-        self.filename = r"temp\visio\pages\page1.xml"
+        self.filename = r"visio\\temp\\visio\\pages\\page1.xml"
         self.shapes: [shape.Shape] = []
         self.connectors: [connector.Connector] = []
         self.cords: [[]] = []

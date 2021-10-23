@@ -1,5 +1,4 @@
-import shape
-CONNECTOR_WIDTH = 0.25
+from visio import shape
 
 
 class Connector:
