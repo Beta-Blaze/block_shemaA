@@ -11,7 +11,7 @@ class Parser:
         self.parse_defines_without_brackets = {}
 
     def read(self, name):
-        os.system(f".\\helpers\\formatter.exe --i --style=file {name}")
+        os.system(f".\\helpers\\formatter.exe --i {name}")
         with open(name) as f:
             self.data = f.readlines()
 
