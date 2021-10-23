@@ -2,6 +2,7 @@ import os
 import re
 
 
+# noinspection PyMethodMayBeStatic
 class Parser:
     def __init__(self, data=''):
         self.data = data
