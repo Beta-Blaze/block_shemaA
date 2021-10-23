@@ -9,7 +9,7 @@ int main() {
         summa += num % 10;
         num /= 10;
       }
-      if (summa == 30) {
+      if (summa == pow(10, 20)) {
         int count{};
         for (int iter : valid) {
           if (iter == 1) {
@@ -17,7 +17,7 @@ int main() {
           }
         }
         if (count == 2) {
-          cout << i << endl;
+          cout << abs(123) << endl;
         }
       }
     }

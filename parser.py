@@ -111,15 +111,28 @@ class Parser:
             return string[1]
 
     def parse_match_funk(self):
+        double = {'pow': '^'}
+        single = {'abs': '|'}
         for string in range(len(self.data)):
-            init = re.finditer(r".*?(pow\(.*?,.*?\))", self.data[string])
-            for i in init:
-                i = i.group(1)
-                if i.count('(') != i.count(')'):
-                    i = i + ')'
-                gr = i
-                i = i.replace('pow(', '')[:-1].split(', ')
-                self.data[string] = self.data[string].replace(gr, ' ^ '.join(i))
+            for d in double:
+                init = re.finditer(r".*?({}\(.+?,.+?\))".format(d), self.data[string])
+                for i in init:
+                    i = i.group(1)
+                    if i.count('(') != i.count(')'):
+                        i = i + ')'
+                    gr = i
+                    i = i.replace(f'{d}(', '')[:-1].split(', ')
+                    self.data[string] = self.data[string].replace(gr, f' {double[d]} '.join(i))
+            for s in single:
+                init = re.finditer(r".*?({}\(.+?\))".format(s), self.data[string])
+                for i in init:
+                    i = i.group(1)
+                    if i.count('(') != i.count(')'):
+                        i = i + ')'
+                    gr = i
+                    i = i.replace(f'{s}(', '')[:-1]
+                    self.data[string] = self.data[string].replace(gr, f'{single[s]} {i} {single[s]}')
+            self.data[string] = self.data[string].replace(' % ', ' ост ').replace(' == ', ' = ')
 
     def parse_for(self, string):
         if re.match(r" *?for ", string):

@@ -98,7 +98,6 @@ for stringn in range(len(p.funcs[funk_name])):
         else:
             sdvig = 0
 
-    p.funcs[funk_name][stringn] = p.funcs[funk_name][stringn].replace(' % ', ' ост ').replace(' == ', ' = ')
     string: str = p.funcs[funk_name][stringn]
 
     ifs = p.parse_if(stringn, p.funcs[funk_name])
