@@ -89,7 +89,7 @@ class Parser:
         if 'cout' in string:
             string = string[string[:string.index('c')].count(' '):]
             string = string[:-1].replace(' << ', ' ').replace('cout', '').replace('endl', '')
-            return 'Вывод ' + string[1:].replace('"', '').replace('  ', ' ')
+            return 'Вывод ' + string[1:].replace('  ', ' ')
 
         if 'cin' in string:
             string = string[:-1].split(' >> ')[1:]
@@ -111,35 +111,34 @@ class Parser:
             string = string.replace(' {', '').replace(';', ' ').split(' (')
             return string[1]
 
-    def parse_match_funk(self):
+    def parse_match_func(self, string: str):
         double = {'pow': '^'}
         single = {'abs': '|'}
-        for string in range(len(self.data)):
-            for d in double:
-                init = re.finditer(r".*?({}\(.+?,.+?\))".format(d), self.data[string])
-                for i in init:
-                    i = i.group(1)
-                    if i.count('(') != i.count(')'):
-                        i = i + ')'
-                    gr = i
-                    i = i.replace(f'{d}(', '')[:-1].split(', ')
-                    self.data[string] = self.data[string].replace(gr, f' {double[d]} '.join(i))
-            for s in single:
-                init = re.finditer(r".*?({}\(.+?\))".format(s), self.data[string])
-                for i in init:
-                    i = i.group(1)
-                    if i.count('(') != i.count(')'):
-                        i = i + ')'
-                    gr = i
-                    i = i.replace(f'{s}(', '')[:-1]
-                    self.data[string] = self.data[string].replace(gr, f'{single[s]} {i} {single[s]}')
-            self.data[string] = self.data[string].replace(' % ', ' ост ').replace(' == ', ' = ')
+        for d in double:
+            init = re.finditer(r".*?({}\(.+?,.+?\))".format(d), string)
+            for i in init:
+                i = i.group(1)
+                if i.count('(') != i.count(')'):
+                    i = i + ')'
+                gr = i
+                i = i.replace(f'{d}(', '')[:-1].split(', ')
+                string = string.replace(gr, f' {double[d]} '.join(i))
+        for s in single:
+            init = re.finditer(r".*?({}\(.+?\))".format(s), string)
+            for i in init:
+                i = i.group(1)
+                if i.count('(') != i.count(')'):
+                    i = i + ')'
+                gr = i
+                i = i.replace(f'{s}(', '')[:-1]
+                string = string.replace(gr, f'{single[s]} {i} {single[s]}')
+        return string.replace(' % ', ' ост ').replace(' == ', ' = ').replace('&', '&#38;').replace('<', '&lt;').replace('>', '&gt;').replace('\n', '&#xA;')
 
     def parse_for(self, string):
         if re.match(r" *?for ", string):
             string = string[:-3].lstrip(' ')[5:]
             if ':' in string:
-                return f"{string.split(' ')[1]} ({string.split(' ')[-1]})".replace('<', '&lt;')
+                return f"{string.split(' ')[1]} ({string.split(' ')[-1]})"
             else:
                 string = string.split('; ')
                 pars = self.parse_variable_initializations(string[0])
@@ -160,7 +159,7 @@ class Parser:
                     else:
                         value = s[3] + s[4]
                         value.replace('+', '')
-                return f'{perem[0]}{"=" if perem[1] else ""}{perem[1]} ({str(value).replace("+", "")}) {string[1]}'.replace('<', '&lt;')
+                return f'{perem[0]}{"=" if perem[1] else ""}{perem[1]} ({str(value).replace("+", "")}) {string[1]}'
         return None
 
     def parse_if(self, start_string, strings):

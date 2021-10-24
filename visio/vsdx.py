@@ -1,12 +1,19 @@
+import os
 import shutil
+import subprocess
 from visio import FILE_DIRECTORY
 
 
 class Vsdx:
     def __init__(self, filename):
         self.filename = filename
+
         try:
-            shutil.rmtree("temp")
+            subproces = subprocess.Popen('taskkill /IM VISIO.exe', stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+        except Exception:
+            ...
+        try:
+            shutil.rmtree(FILE_DIRECTORY + "temp")
         except Exception:
             ...
         shutil.copytree(FILE_DIRECTORY + "empty-doc", FILE_DIRECTORY + "temp")
@@ -14,4 +21,4 @@ class Vsdx:
     def save_vsdx_file(self):
         shutil.make_archive("temp", 'zip', FILE_DIRECTORY + 'temp')
         shutil.move('temp.zip', self.filename)
-        shutil.rmtree(FILE_DIRECTORY + "\\temp")
+        shutil.rmtree(FILE_DIRECTORY + "temp")

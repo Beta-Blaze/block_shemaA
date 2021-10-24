@@ -17,32 +17,34 @@ lx = lxml.Lxml()
 last = lx.add_shape('START', 'Начало', 'd')
 
 
-def draw(string, last, vector='d'):
+def draw(string, last, vector='d', ifka=False):
     emp = string.replace(' ', '').replace(';', '').replace('}', '').replace('{', '')
-    if p.parse_variable_initializations(string):
+    if ifka:
+        last = lx.add_shape('IF', p.parse_match_func(string), vector, last)
+    elif p.parse_variable_initializations(string):
         temp = []
         for i in p.parse_variable_initializations(string):
-                temp.append(f'{i[0]} = {i[1]}')
-        last = lx.add_shape('PROCESS', '&#xA;'.join(temp), vector, last)
+            temp.append(f'{p.parse_match_func(str(i[0]))} = {p.parse_match_func(str(i[1]))}')
+        last = lx.add_shape('PROCESS', p.parse_match_func('\n'.join(temp)), vector, last)
     elif p.parse_io(string):
-        last = lx.add_shape('INPUT', p.parse_io(string), vector, last)
+        last = lx.add_shape('INPUT', p.parse_match_func(p.parse_io(string)), vector, last)
     elif p.parse_while(string):
-        last = lx.add_shape('IF',  p.parse_while(string), vector, last)
+        last = lx.add_shape('IF',  p.parse_match_func(p.parse_while(string)), vector, last)
     elif p.parse_for(string):
-        last = lx.add_shape('MODIFICATION',  p.parse_for(string), vector, last)
+        last = lx.add_shape('MODIFICATION',  p.parse_match_func(p.parse_for(string)), vector, last)
     elif not emp or emp == 'do':
         ...
     elif funk_name == 'main' and 'return 0' in string:
         ...
     else:
-        last = lx.add_shape('PROCESS', string.replace(';', '').lstrip(), vector, last)
+        last = lx.add_shape('PROCESS', p.parse_match_func(string.replace(';', '').lstrip()), vector, last)
     return last
 
 
 def draw_if(ifs, vector='d'):
     global last
     deep = [1, 1]
-    last = lx.add_shape('IF', ifs['Condition'], vector, last)
+    last = draw(ifs['Condition'], last, vector, True)
     block_if = last
     for flag in [True, False]:
         first = True
@@ -83,7 +85,6 @@ p.define()
 # print(p.parse_defines_without_brackets)
 
 p.replace_modification()
-p.parse_match_funk()
 p.find_func()
 
 sdvig = 0
