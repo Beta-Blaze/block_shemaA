@@ -1,13 +1,18 @@
 #include <iostream>
+#define maxi(a, b) ((a) > (b)) ? (a) : (b)
 using namespace std;
+
 int main() {
-  double x{}, y{};
-  cout << "Enter x and y (separated by space)" << endl;
-  cin >> x >> y;
-  if (x < 0 || y < 0) {
-    x = abs(x);
-    y = abs(y);
+  double x{}, y{}, z{};
+  cout << "Введите x y z:" << endl;
+  cin >> x >> y >> z;
+  if ((z >= x) and (z <= y)) {
+    x = y = z = maxi(x, maxi(y, z));
+  } else if (not((z >= y) and (z <= x))) {
+    x *= x;
+    y *= y;
+    z *= z;
   }
-  cout << "x: &&&" << x << " y: " << y << endl;
+  cout << "x: " << x << "\ny: " << y << "\nz: " << z << endl;
   return 0;
 }

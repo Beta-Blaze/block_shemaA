@@ -2,13 +2,6 @@ import parser
 from visio import shape, lxml
 from visio.vsdx import Vsdx
 
-# def replace_define(string: str, p: parser.Parser()):
-#     for i in p.parse_defines_with_brackets:
-#         inits = re.finditer(r".*?{}\((.+?)\)".format(i), string)
-#         for init in inits:
-#             perem = init.group(1)
-#             string = string.replace(f'{i}({perem})', perem.join(p.parse_defines_with_brackets[i]))
-#     return string
 
 v = Vsdx("new.vsdx")
 lx = lxml.Lxml()
@@ -20,24 +13,24 @@ last = lx.add_shape('START', 'Начало', 'd')
 def draw(string, last, vector='d', ifka=False):
     emp = string.replace(' ', '').replace(';', '').replace('}', '').replace('{', '')
     if ifka:
-        last = lx.add_shape('IF', p.parse_match_func(string), vector, last)
+        last = lx.add_shape('IF', p.final_transformation(string), vector, last)
     elif p.parse_variable_initializations(string):
         temp = []
         for i in p.parse_variable_initializations(string):
-            temp.append(f'{p.parse_match_func(str(i[0]))} = {p.parse_match_func(str(i[1]))}')
-        last = lx.add_shape('PROCESS', p.parse_match_func('\n'.join(temp)), vector, last)
+            temp.append(f'{p.final_transformation(str(i[0]))} = {p.final_transformation(str(i[1]))}')
+        last = lx.add_shape('PROCESS', p.final_transformation('\n'.join(temp)), vector, last)
     elif p.parse_io(string):
-        last = lx.add_shape('INPUT', p.parse_match_func(p.parse_io(string)), vector, last)
+        last = lx.add_shape('INPUT', p.final_transformation(p.parse_io(string)), vector, last)
     elif p.parse_while(string):
-        last = lx.add_shape('IF',  p.parse_match_func(p.parse_while(string)), vector, last)
+        last = lx.add_shape('IF', p.final_transformation(p.parse_while(string)), vector, last)
     elif p.parse_for(string):
-        last = lx.add_shape('MODIFICATION',  p.parse_match_func(p.parse_for(string)), vector, last)
+        last = lx.add_shape('MODIFICATION', p.final_transformation(p.parse_for(string)), vector, last)
     elif not emp or emp == 'do':
         ...
     elif funk_name == 'main' and 'return 0' in string:
         ...
     else:
-        last = lx.add_shape('PROCESS', p.parse_match_func(string.replace(';', '').lstrip()), vector, last)
+        last = lx.add_shape('PROCESS', p.final_transformation(string.replace(';', '').lstrip()), vector, last)
     return last
 
 

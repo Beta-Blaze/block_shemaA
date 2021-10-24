@@ -4,16 +4,16 @@ import re
 
 # noinspection PyMethodMayBeStatic
 class Parser:
-    def __init__(self, data=''):
+    def __init__(self, data: str = ''):
         self.data = data
         self.defines = []
         self.funcs = {}
         self.parse_defines_with_brackets = {}
         self.parse_defines_without_brackets = {}
 
-    def read(self, name):
+    def read(self, name: str):
         os.system(f".\\helpers\\formatter.exe --i {name}")
-        with open(name) as f:
+        with open(name, encoding='utf-8') as f:
             self.data = f.readlines()
 
     def prepare(self):
@@ -27,32 +27,41 @@ class Parser:
         self.data = emp
 
     def define(self):
-        for i in self.defines:
-            i: str = i[8:]
-            if i[i.index(' ') - 1] != ')':
-                name = i.split()[0]
-                temp = ' '.join(i.split()[1:])
+        for string in self.defines:
+            string: str = string[8:]
+            if '(' not in string.split(' ')[0]:
+                name = string.split()[0]
+                temp = ' '.join(string.split()[1:])
                 self.parse_defines_without_brackets[name] = temp
                 continue
-            perem = i[i.index('(') + 1: i.index(')')]
-            name = i[: i.index('(')]
-            i = i[i.index(')') + 2:]
+            perem = string[string.index('(') + 1: string.index(')')].split(', ')
+            name = string[: string.index('(')]
+            string = string[string.index(')') + 2:]
             symb = '+ - * / % ^ & | ~ ! = < >  = < > , ( ) [ ]'.split(' ') + [' ']
             ids = []
-            for b in range(0, len(i) - len(perem) + 1):
-                if i[b: b + len(perem)] == perem:
-                    if i[b - 1] in symb:
-                        if b + len(perem) + 1 in range(0, len(i) - len(perem)):
-                            if i[b + len(perem) + 1]:
-                                ids.append([b, b + len(perem)])
-                        else:
-                            ids.append([b, b + len(perem)])
-            temp = []
-            for i2 in ids[::-1]:
-                temp.insert(0, i[i2[1]:])
-                i = i[:i2[0]]
-            temp.insert(0, i)
-            self.parse_defines_with_brackets[name] = temp
+            for p in perem:
+                for b in range(0, len(string) - len(p) + 1):
+                    if string[b: b + len(p)] == p:
+                        if string[b - 1] in symb:
+                            if b + len(p) + 1 in range(0, len(string) - len(p)):
+                                if string[b + len(p) + 1]:
+                                    ids.append([b, b + len(p), p + '_SUPPER_PUPER_DEF'])
+                            else:
+                                ids.append([b, b + len(p), p + '_SUPPER_PUPER_DEF'])
+            temp = ''
+            for _id in sorted(ids, key=lambda x: x[0], reverse=True):
+                temp = _id[2] + string[_id[1]:] + temp
+                string = string[:_id[0]]
+            temp = string + temp
+            self.parse_defines_with_brackets[name] = [list(map(lambda x: x + '_SUPPER_PUPER_DEF', perem)), temp]
+
+    def replace_define(self, string: str) -> str:
+        for i in self.parse_defines_with_brackets:
+            inits = re.finditer(r".*?{}\((.+)\)+".format(i), string)  # TODO
+            for init in inits:
+                perem = init.group(1)
+                print(perem)
+        return string
 
     def parse_variable_initializations(self, string: str) -> list:
         parsed_variables = []
@@ -85,7 +94,7 @@ class Parser:
 
             return parsed_variables
 
-    def parse_io(self, string: str):
+    def parse_io(self, string: str) -> str:
         if 'cout' in string:
             string = string[string[:string.index('c')].count(' '):]
             string = string[:-1].replace(' << ', ' ').replace('cout', '').replace('endl', '')
@@ -105,13 +114,16 @@ class Parser:
             elif self.data[s] == '}':
                 self.funcs[name] = self.data[index + 1: s]
 
-    def parse_while(self, string):
+    def parse_while(self, string: str) -> str:
         string = string.replace('}', '')
         if re.match(r" *?while ", string):
             string = string.replace(' {', '').replace(';', ' ').split(' (')
             return string[1]
 
-    def parse_match_func(self, string: str):
+    def replace_xml_special_symbols(self, string: str) -> str:
+        return string.replace(' % ', ' ост ').replace(' == ', ' = ').replace('&', '&#38;').replace('<', '&lt;').replace('>', '&gt;').replace('\n', '&#xA;').replace('\\n', ' ')
+
+    def parse_match_funk(self, string: str) -> str:
         double = {'pow': '^'}
         single = {'abs': '|'}
         for d in double:
@@ -122,7 +134,7 @@ class Parser:
                     i = i + ')'
                 gr = i
                 i = i.replace(f'{d}(', '')[:-1].split(', ')
-                string = string.replace(gr, f' {double[d]} '.join(i))
+                string = string.replace(gr, ' (' + f' {double[d]} '.join(i) + ') ')
         for s in single:
             init = re.finditer(r".*?({}\(.+?\))".format(s), string)
             for i in init:
@@ -132,9 +144,16 @@ class Parser:
                 gr = i
                 i = i.replace(f'{s}(', '')[:-1]
                 string = string.replace(gr, f'{single[s]} {i} {single[s]}')
-        return string.replace(' % ', ' ост ').replace(' == ', ' = ').replace('&', '&#38;').replace('<', '&lt;').replace('>', '&gt;').replace('\n', '&#xA;')
+        return string
 
-    def parse_for(self, string):
+    def final_transformation(self, string: str) -> str:
+        string = self.parse_match_funk(string)
+        string = self.replace_define(string)
+
+        string = self.replace_xml_special_symbols(string)
+        return string
+
+    def parse_for(self, string: str) -> str | None:
         if re.match(r" *?for ", string):
             string = string[:-3].lstrip(' ')[5:]
             if ':' in string:
@@ -162,7 +181,7 @@ class Parser:
                 return f'{perem[0]}{"=" if perem[1] else ""}{perem[1]} ({str(value).replace("+", "")}) {string[1]}'
         return None
 
-    def parse_if(self, start_string, strings):
+    def parse_if(self, start_string, strings) -> ({True: [], False: [], str: int | str}, int):
         opened_brackets = 0
         counter = start_string + 1
         data = {True: [], False: [], "Depth": 0}
