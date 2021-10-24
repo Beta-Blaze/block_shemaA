@@ -12,7 +12,7 @@ class Parser:
         self.parse_defines_without_brackets = {}
 
     def read(self, name: str):
-        os.system(f".\\helpers\\formatter.exe --i {name}")
+        os.system('.\\helpers\\formatter.exe --i --style="{BasedOnStyle: Google, ColumnLimit: 9999, MaxEmptyLinesToKeep: 0}" ' + name)
         with open(name, encoding='utf-8') as f:
             self.data = f.readlines()
 
