@@ -120,8 +120,10 @@ class Parser:
             return 'Ввод ' + ' '.join(string)
         return None
 
-    def find_func(self):  # TODO typedef void F(); F  fv;
+    def find_func(self, f_type: str = None):  # TODO typedef void F(); F  fv;
         keywords = "vector bool char wchar_t char8_t char16_t char32_t int float double void".split()
+        if f_type:
+            keywords.append(f_type)
         for s in range(len(self.data)):
             if any([self.data[s].startswith(i) for i in keywords]) and '{' in self.data[s] and '}' not in self.data[s]:
                 index = s
