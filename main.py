@@ -71,6 +71,7 @@ def draw_if(ifs, vector='d'):
 p = parser.Parser()
 p.read('primer.cpp')
 funk_name = 'main'
+f_type = 'int'
 p.prepare()
 p.define()
 
@@ -78,7 +79,7 @@ p.define()
 # print(p.parse_defines_without_brackets)
 
 p.replace_modification()
-p.find_func()
+p.find_func(f_type)
 
 sdvig = 0
 

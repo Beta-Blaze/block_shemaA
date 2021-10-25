@@ -55,12 +55,27 @@ class Parser:
             temp = string + temp
             self.parse_defines_with_brackets[name] = [list(map(lambda x: x + '_SUPPER_PUPER_DEF', perem)), temp]
 
+    def find_define_in_string(self, string: str, name: str, shift=0) -> list:
+        res = re.search(r".*?{}\((.+)\)+".format(name), string)
+        if res:
+            pos = string.index(res.group(1))
+            pos = [pos + shift, pos + len(res.group(1)) + shift]
+            shift = pos[0]
+            return [pos] + self.find_define_in_string(res.group(1), name, shift)
+        return []
+
     def replace_define(self, string: str) -> str:
         for i in self.parse_defines_with_brackets:
-            inits = re.finditer(r".*?{}\((.+)\)+".format(i), string)  # TODO
-            for init in inits:
-                perem = init.group(1)
-                print(perem)
+            pos = self.find_define_in_string(string, i)
+            if pos:
+                while pos:
+                    pos = pos[-1]
+                    perem = string[pos[0]: pos[1]].split(', ')
+                    new = self.parse_defines_with_brackets[i][1]
+                    for p in range(len(self.parse_defines_with_brackets[i][0])):
+                        new = new.replace(self.parse_defines_with_brackets[i][0][p], perem[p])
+                    string = string.replace(f'{i}({string[pos[0]: pos[1]]})', new)
+                    pos = self.find_define_in_string(string, i)
         return string
 
     def parse_variable_initializations(self, string: str) -> list:
@@ -105,8 +120,10 @@ class Parser:
             return 'Ввод ' + ' '.join(string)
         return None
 
-    def find_func(self):  # TODO typedef void F(); F  fv;
+    def find_func(self, f_type: str = None):  # TODO typedef void F(); F  fv;
         keywords = "vector bool char wchar_t char8_t char16_t char32_t int float double void".split()
+        if f_type:
+            keywords.append(f_type)
         for s in range(len(self.data)):
             if any([self.data[s].startswith(i) for i in keywords]) and '{' in self.data[s] and '}' not in self.data[s]:
                 index = s
