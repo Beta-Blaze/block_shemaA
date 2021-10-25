@@ -181,61 +181,53 @@ class Parser:
                 return f'{perem[0]}{"=" if perem[1] else ""}{perem[1]} ({str(value).replace("+", "")}) {string[1]}'
         return None
 
-    def parse_if(self, start_string, strings) -> ({True: [], False: [], str: int | str}, int):
+    def parse_if(self, counter, strings, else_if=False) -> ({True: [], False: [], str: int | str}, int):
         opened_brackets = 0
-        counter = start_string + 1
-        data = {True: [], False: [], "Depth": 0}
-        if counter >= len(strings):
-            return data, counter
-        condition = re.search(r"^(?!else)\s*if \((.*?)\) {", strings[start_string])
-        if condition:
-            opened_brackets += 1
-            data['Condition'] = condition.group(1)
-            while counter < len(strings):
-                if re.match(r"\s*?if \((.*?)\) {", strings[counter]):
-                    inner_block = self.parse_if(counter, strings)
-                    counter = inner_block[1]
-                    data[True].append(inner_block[0])
-                    data["Depth"] += inner_block[0]['Depth'] + 1
+        state = "NO_CONDITION"
+        data = {True: [], False: []}
+        while counter < len(strings):
+            else_regex = re.search(r"else\s*(if)?", strings[counter])
+            if else_regex:
+                state = "PARSING_ELSE_BLOCK"
+                if else_regex.group(1):
+                    opened_brackets -= 1
+                else:
+                    counter += 1
                     continue
-                if '{' in strings[counter]:
+            condition = re.search(r"\s*if \((.*?)\) {", strings[counter])
+            if condition:
+                if state == "NO_CONDITION":
+                    state = "PARSING_IF_BLOCK"
+                    data['Condition'] = condition.group(1)
                     opened_brackets += 1
-                if '}' in strings[counter]:
-                    if opened_brackets:
-                        opened_brackets -= 1
-                    if not opened_brackets:
-                        break
-                data[True].append(strings[counter])
-                data["Depth"] += 1
-                counter += 1
-        if "else" in strings[counter]:
-            false_depth = 0
-            opened_brackets -= 1
-            else_if_condition = re.search(r"if \((.*?)\) {", strings[counter])
-            if not else_if_condition:
-                counter += 1
-            while counter < len(strings):
-                if re.search(r"if \((.*?)\) {", strings[counter]):
-                    strings[counter] = strings[counter].replace("} else ", "")
-                    inner_block = self.parse_if(counter, strings)
+                    counter += 1
+                else:
+                    cnt = counter + 1
+                    if state == "PARSING_IF_BLOCK":
+                        cnt -= 1
+                    inner_block = self.parse_if(cnt, strings, else_if=(state == "PARSING_ELSE_BLOCK"))
                     counter = inner_block[1]
-                    data[False].append(inner_block[0])
-                    data["Depth"] += inner_block[0]['Depth'] + 1
-                    if else_if_condition:
-                        break
-                    continue
-                if '{' in strings[counter]:
+                    inner_block[0]['Condition'] = condition.group(1)
+                    data[True if state == "PARSING_IF_BLOCK" else False].append(inner_block[0])
+                continue
+            if else_if:
+                state = "PARSING_IF_BLOCK"
+                opened_brackets += 1
+                else_if = False
+            if state != "NO_CONDITION":
+                if "{" in strings[counter]:
                     opened_brackets += 1
-                if '}' in strings[counter]:
-                    if opened_brackets:
-                        opened_brackets -= 1
-                    if not opened_brackets:
-                        break
-                data[False].append(strings[counter])
+                if "}" in strings[counter]:
+                    opened_brackets -= 1
+                if not opened_brackets:
+                    counter += 1
+                    break
+                data[True if state == "PARSING_IF_BLOCK" else False].append(strings[counter])
                 counter += 1
-                false_depth += 1
-            data["Depth"] = max(data["Depth"], false_depth)
-        return data, counter + 1
+            else:
+                break
+        print(data)
+        return data, counter
 
     def replace_modification(self):
         for i in range(len(self.data)):
