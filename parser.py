@@ -32,12 +32,12 @@ class Parser:
             if '(' not in string.split(' ')[0]:
                 name = string.split()[0]
                 temp = ' '.join(string.split()[1:])
-                self.parse_defines_without_brackets[name] = temp
+                self.parse_defines_without_brackets[name] = temp.rstrip(';')
                 continue
             perem = string[string.index('(') + 1: string.index(')')].split(', ')
             name = string[: string.index('(')]
             string = string[string.index(')') + 2:]
-            symb = '+ - * / % ^ & | ~ ! = < >  = < > , ( ) [ ]'.split(' ') + [' ']
+            symb = '+ - * / % ^ & | ~ ! = < >  = < > , ( ) [ ] ;'.split(' ') + [' ']
             ids = []
             for p in perem:
                 for b in range(0, len(string) - len(p) + 1):
@@ -65,17 +65,36 @@ class Parser:
         return []
 
     def replace_define(self, string: str) -> str:
-        for i in self.parse_defines_with_brackets:
-            pos = self.find_define_in_string(string, i)
+        for define in self.parse_defines_with_brackets:
+            pos = self.find_define_in_string(string, define)
             if pos:
                 while pos:
                     pos = pos[-1]
                     perem = string[pos[0]: pos[1]].split(', ')
-                    new = self.parse_defines_with_brackets[i][1]
-                    for p in range(len(self.parse_defines_with_brackets[i][0])):
-                        new = new.replace(self.parse_defines_with_brackets[i][0][p], perem[p])
-                    string = string.replace(f'{i}({string[pos[0]: pos[1]]})', new)
-                    pos = self.find_define_in_string(string, i)
+                    new = self.parse_defines_with_brackets[define][1]
+                    for p in range(len(self.parse_defines_with_brackets[define][0])):
+                        new = new.replace(self.parse_defines_with_brackets[define][0][p], perem[p])
+                    string = string.replace(f'{define}({string[pos[0]: pos[1]]})', new)
+                    pos = self.find_define_in_string(string, define)
+
+        symb = '+ - * / % ^ & | ~ ! = < >  = < > , ( ) [ ] ;'.split(' ') + [' ']
+        for define in self.parse_defines_without_brackets:
+            cord = []
+            for s in range(0, len(string) - len(define) + 1):
+                if string[s:s + len(define)] == define:
+                    if s == 0:
+                        if s == len(string) - len(define):
+                            cord.append([s, s + len(define)])
+                        elif string[s + len(define)] in symb:
+                            cord.append([s, s + len(define)])
+                    elif s == len(string) - len(define):
+                        if string[s - 1] in symb:
+                            cord.append([s, s + len(define)])
+                    elif string[s + len(define)] in symb and string[s - 1] in symb:
+                        cord.append([s, s + len(define)])
+            for c in cord[::-1]:
+                string = string[:c[0]] + self.parse_defines_without_brackets[define] + string[c[1]:]
+
         return string
 
     def parse_variable_initializations(self, string: str) -> list:
