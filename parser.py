@@ -234,7 +234,7 @@ class Parser:
             if condition:
                 if state == "NO_CONDITION":
                     state = "PARSING_IF_BLOCK"
-                    data['Condition'] = condition.group(1)
+                    data["Condition"] = condition.group(1)
                     opened_brackets += 1
                     counter += 1
                 else:
@@ -243,7 +243,7 @@ class Parser:
                         cnt -= 1
                     inner_block = self.parse_if(cnt, strings, else_if=(state == "PARSING_ELSE_BLOCK"))
                     counter = inner_block[1]
-                    inner_block[0]['Condition'] = condition.group(1)
+                    inner_block[0]["Condition"] = condition.group(1)
                     data[True if state == "PARSING_IF_BLOCK" else False].append(inner_block[0])
                 continue
             if else_if:
@@ -264,6 +264,37 @@ class Parser:
                 break
         return data, counter
 
+    def parse_switch(self, counter: int, strings: list[str]) -> tuple[dict[str, dict], int] | None:
+        switch_regex = re.match(r"\s*switch \((.*?)\)", strings[counter])
+        if switch_regex:
+            result = {"condition": switch_regex.group(1),
+                      "cases": {}}
+            case = True  # False means default branch
+            while counter < len(strings):
+                counter += 1
+                stripped_string = strings[counter].strip()
+                case_regex = re.match(r"\s*case (.*?):$", strings[counter])
+                if stripped_string == "break;":
+                    if case == "default":
+                        break
+                    continue
+                if case == "default" and stripped_string == "}" and len(result["cases"]["default"]):  # Handle unclosed default block
+                    number_of_whitespaces = len(strings[counter]) - len(strings[counter].lstrip(' '))
+                    number_of_whitespaces_first_str = len(result["cases"]["default"][0]) - len(result["cases"]["default"][0].lstrip(' '))
+                    if number_of_whitespaces < number_of_whitespaces_first_str:
+                        break
+                if case_regex:
+                    case = (case_regex.group(1)).lstrip("(").rstrip(")")
+                    result["cases"][case] = []
+                    continue
+                if stripped_string == "default:":
+                    case = "default"
+                    result["cases"][case] = []
+                    continue
+                result["cases"][case].append(strings[counter])
+            return result, counter + 1
+        return None
+
     def replace_modification(self):
         for i in range(len(self.data)):
             if re.match(r"[A-z 0-9]*?(\+{2}|-{2});", self.data[i]):
@@ -280,7 +311,6 @@ class Parser:
                 n = self.data[i].split(' ' + init.group(1) + ' ')[0].count(' ')
                 emp = self.data[i][n:-1].split(' ' + init.group(1) + ' ')
                 self.data[i] = ' ' * n + emp[0] + ' = ' + emp[0] + ' ' + init.group(1)[0] + ' ' + emp[1] + ';'
-
 
 # p = Parser()
 # p.read('primer.cpp')

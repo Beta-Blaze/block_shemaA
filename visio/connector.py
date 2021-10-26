@@ -50,7 +50,7 @@ class Connector:
                                                                                     </Section>"""
 
     def get_xml(self) -> str:
-        if self.shape_from.flag_end or self.shape_to.flag_end:
+        if self.shape_from.flag_end or self.shape_to.flag_end or self.shape_to.shape_type == 'or':
             return ""
         self.calculate_position()
         return f"""<Shape ID='{self.shape_id}' Type='Shape' Master='13'>

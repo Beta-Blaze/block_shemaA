@@ -1,7 +1,7 @@
 from visio.vsdx import Vsdx
 from visio.lxml import Lxml
 
-v = Vsdx("../new.vsdx")
+v = Vsdx("new.vsdx")
 
 lx = Lxml()
 # my_shape1 = lx.add_shape(Shape("PROCESS", "1"), 'd')
@@ -21,7 +21,9 @@ my_shape6 = lx.add_shape("MODIFICATION", "2", 'd', my_shape5)
 my_shape7 = lx.add_shape("DEFINED_PROCESS", "3", 'r', my_shape6)
 my_shape8 = lx.add_shape("ONE_PAGE_CONNECTOR", "4", 'r', my_shape7)
 my_shape9 = lx.add_shape("MULTI_PAGE_CONNECTOR", "4", 'l', my_shape8)
-my_shape10 = lx.add_shape("POINT", "4", 'l', my_shape9)
+my_shape10 = lx.add_shape("PROCESS", "4", 'or', my_shape9)
+my_shape12 = lx.add_shape("PROCESS", "4", 'or', my_shape10)
+my_shape13 = lx.add_shape("PROCESS", "4", 'or', my_shape12)
 
 lx.write_file()
 

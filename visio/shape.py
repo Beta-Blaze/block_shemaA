@@ -31,6 +31,9 @@ class Shape:
         if vector == 'l':
             self.pos[0] -= 1.5
 
+        if vector == 'or':
+            self.pos[0] += 1.5
+
         for i in self.shapes:
             i: Shape
             if self.pos == i.pos and self != i:
@@ -39,8 +42,8 @@ class Shape:
         if not direction or direction == 'd':
             for i in self.to_s:
                 i.move(vector, 'd')
-        if not direction or direction == 'a':
-            self.from_s.move(vector, 'a')
+        if not direction or direction == 'u':
+            self.from_s.move(vector, 'u')
 
     def get_xml(self) -> str:
         return f"""<Shape ID='{self.shape_id}' Type='Shape' Master='{self.master}'><Cell N='PinX' V='{self.pos[0]}'/>

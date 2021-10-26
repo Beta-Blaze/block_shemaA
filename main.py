@@ -2,15 +2,13 @@ import parser
 from visio import shape, lxml
 from visio.vsdx import Vsdx
 
-
 v = Vsdx("new.vsdx")
 lx = lxml.Lxml()
-
 
 last = lx.add_shape('START', 'Начало', 'd')
 
 
-def draw(string, last, vector='d', ifka=False):
+def draw(string, last, vector='d', ifka=False, flag_end=False):
     emp = string.replace(' ', '').replace(';', '').replace('}', '').replace('{', '')
     if ifka:
         last = lx.add_shape('IF', p.final_transformation(string), vector, last)
@@ -18,19 +16,19 @@ def draw(string, last, vector='d', ifka=False):
         temp = []
         for i in p.parse_variable_initializations(string):
             temp.append(f'{p.final_transformation(str(i[0]))} = {p.final_transformation(str(i[1]))}')
-        last = lx.add_shape('PROCESS', p.final_transformation('\n'.join(temp)), vector, last)
+        last = lx.add_shape('PROCESS', p.final_transformation('\n'.join(temp)), vector, last, flag_end)
     elif p.parse_io(string):
-        last = lx.add_shape('INPUT', p.final_transformation(p.parse_io(string)), vector, last)
+        last = lx.add_shape('INPUT', p.final_transformation(p.parse_io(string)), vector, last, flag_end)
     elif p.parse_while(string):
-        last = lx.add_shape('IF', p.final_transformation(p.parse_while(string)), vector, last)
+        last = lx.add_shape('IF', p.final_transformation(p.parse_while(string)), vector, last, flag_end)
     elif p.parse_for(string):
-        last = lx.add_shape('MODIFICATION', p.final_transformation(p.parse_for(string)), vector, last)
+        last = lx.add_shape('MODIFICATION', p.final_transformation(p.parse_for(string)), vector, last, flag_end)
     elif not emp or emp == 'do':
         ...
     elif funk_name == 'main' and 'return 0' in string:
         ...
     else:
-        last = lx.add_shape('PROCESS', p.final_transformation(string.replace(';', '').lstrip()), vector, last)
+        last = lx.add_shape('PROCESS', p.final_transformation(string.replace(';', '').lstrip()), vector, last, flag_end)
     return last
 
 
@@ -71,6 +69,28 @@ def draw_if(ifs, vector='d'):
     return max(deep)
 
 
+def draw_switch(switch: dict[str, dict], vector='d', last_if=None):
+    global last
+    depth = 0
+    flag_first = True
+    head_if = last = lx.add_shape("IF", switch["condition"], vector, last_if if last_if else last)
+    for case in switch["cases"]:
+        flag_first_case = True
+        for string in switch["cases"][case]:
+            if flag_first:
+                head_case = last = draw(string, last, 'r', flag_end=True)
+                flag_first = False
+            else:
+                last = draw(string, head_case if flag_first_case else last, 'd' if flag_first_case else 'or', flag_end=True)
+                if flag_first_case:
+                    head_case = last
+            flag_first_case = False
+        if head_if != last:
+            depth += 1
+    last = lx.add_shape('POINT', depth, 'l', head_case)
+    return depth + 1
+
+
 p = parser.Parser()
 p.read('primer.cpp')
 funk_name = 'main'
@@ -103,6 +123,12 @@ for stringn in range(len(p.funcs[funk_name])):
     if ifs[0][True] or ifs[0][False]:
         sdvig = ifs[1]
         draw_if(ifs[0])
+        continue
+    switch = p.parse_switch(stringn, p.funcs[funk_name])
+    if switch:
+        print(switch)
+        sdvig = switch[1]
+        draw_switch(switch[0])
         continue
 
     last = draw(string, last)

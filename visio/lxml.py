@@ -69,6 +69,9 @@ class Lxml:
         elif direction == 'd':
             new_shape.set_position(x, y - 1)
 
+        elif direction == 'or':
+            new_shape.set_position(x + 1.5, y)
+
         if new_shape.pos in self.cords:
             self.moves(new_shape, direction)
 
