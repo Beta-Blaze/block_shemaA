@@ -1,6 +1,8 @@
 import os
 import shutil
 import subprocess
+import time
+
 from visio import FILE_DIRECTORY
 
 
@@ -9,7 +11,8 @@ class Vsdx:
         self.filename = filename
 
         try:
-            subproces = subprocess.Popen('taskkill /IM VISIO.exe', stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+            subproces = subprocess.Popen('taskkill /F /IM VISIO.exe', stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+            time.sleep(0.1)
         except Exception:
             ...
         try:
@@ -22,3 +25,7 @@ class Vsdx:
         shutil.make_archive("temp", 'zip', FILE_DIRECTORY + 'temp')
         shutil.move('temp.zip', self.filename)
         shutil.rmtree(FILE_DIRECTORY + "temp")
+        try:
+            os.system("start new.vsdx")
+        except Exception:
+            ...

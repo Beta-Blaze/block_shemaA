@@ -51,18 +51,21 @@ def draw_if(ifs, vector='d'):
                     deep[0 if flag else 1] += draw_if(i)
             else:
                 if first:
-                    last = draw(i, (last if flag else block_if), ('r' if flag else 'l'))
-                    first = False
+                    last_t = draw(i, (last if flag else block_if), ('r' if flag else 'l'))
+                    if last_t != last:
+                        first = False
                 else:
-                    last = draw(i, last)
-            deep[0 if flag else 1] += 1
+                    last_t = draw(i, last)
+                if last_t != last:
+                    deep[0 if flag else 1] += 1
+                last = last_t
 
     if last.master == shape.SHAPE_TYPES['POINT']:
-        deep[0] -= 1
-        deep[1] -= 1
+        deep[0] += 1
+        deep[1] += 1
     x, y = block_if.pos[0], block_if.pos[1] - max(deep)
     # print(deep, block_if.text, block_if.pos, [x, y])
-    last = lx.add_shape('POINT', '', 'd', last, flag_end=True)
+    last = lx.add_shape('POINT', max(deep), 'd', last, flag_end=True)
     lx.cords.remove(last.pos)
     last.set_position(x, y)
     return max(deep)

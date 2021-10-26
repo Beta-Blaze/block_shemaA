@@ -262,7 +262,6 @@ class Parser:
                 counter += 1
             else:
                 break
-        print(data)
         return data, counter
 
     def replace_modification(self):
