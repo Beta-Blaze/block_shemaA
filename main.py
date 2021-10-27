@@ -103,7 +103,6 @@ def draw_if(ifs, vector='d'):
 
 def draw_switch(switch: dict[str, dict], vector='d', last_if=None):
     global last
-    print(123)
     depth = 0
     flag_first = True
     head_if = last = lx.add_shape("IF", switch["condition"], vector, last_if if last_if else last)
@@ -112,9 +111,11 @@ def draw_switch(switch: dict[str, dict], vector='d', last_if=None):
         for string in switch["cases"][case]:
             if flag_first:
                 head_case = last = draw(string, last, 'r', flag_end=True)
+                last.connector_text = p.replace_xml_special_symbols(case)
                 flag_first = False
             else:
                 last = draw(string, head_case if flag_first_case else last, 'd' if flag_first_case else 'or', flag_end=True)
+                last.connector_text = p.replace_xml_special_symbols(case)
                 if flag_first_case:
                     head_case = last
             flag_first_case = False
