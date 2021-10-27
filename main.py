@@ -57,7 +57,6 @@ def draw_if(ifs, vector='d'):
                 switch2 = p.parse_switch(0, strings)
                 if switch2:
                     sdvig = switch2[1]
-                    # draw_switch(switch[0])
 
             i = ifs[flag][i_n]
             if type(i) == dict:
@@ -121,7 +120,7 @@ def draw_switch(switch: dict[str, dict], vector='d', last_if=None):
             flag_first_case = False
         if head_if != last:
             depth += 1
-    last = lx.add_shape('POINT', depth, 'l', head_case)
+    last = lx.add_shape('SWITCH_POINT', depth, 'l', head_case)
     return last, depth + 1
 
 
