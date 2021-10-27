@@ -39,7 +39,27 @@ def draw_if(ifs, vector='d'):
     block_if = last
     for flag in [True, False]:
         first = True
-        for i in ifs[flag]:
+        sdvig = 0
+        for i_n in range(len(ifs[flag])):
+            strings = []
+            if sdvig:
+                sdvig -= 1
+                continue
+
+            print(ifs[flag])
+            for s in range(i_n, len(ifs[flag])):
+                if type(ifs[flag][s]) == dict:
+                    break
+                strings.append(ifs[flag][s])
+            sdvig = 0
+            if strings:
+                print(strings)
+                switch2 = p.parse_switch(0, strings)
+                if switch2:
+                    sdvig = switch2[1]
+                    # draw_switch(switch[0])
+
+            i = ifs[flag][i_n]
             if type(i) == dict:
                 if first:
                     last = block_if
@@ -49,14 +69,27 @@ def draw_if(ifs, vector='d'):
                     deep[0 if flag else 1] += draw_if(i)
             else:
                 if first:
-                    last_t = draw(i, (last if flag else block_if), ('r' if flag else 'l'))
-                    if last_t != last:
+                    if sdvig:
+                        temp = draw_switch(switch2[0], 'r' if flag else 'l', last if flag else block_if)
+                        last = temp[0]
+                        deep[0 if flag else 1] += temp[1]
                         first = False
+
+                    else:
+                        last_t = draw(i, (last if flag else block_if), ('r' if flag else 'l'))
+                        if last_t != last:
+                            first = False
                 else:
-                    last_t = draw(i, last)
-                if last_t != last:
-                    deep[0 if flag else 1] += 1
-                last = last_t
+                    if sdvig:
+                        temp = draw_switch(switch2[0])
+                        last = temp[0]
+                        deep[0 if flag else 1] += temp[1]
+                    else:
+                        last_t = draw(i, last)
+                        if last_t != last and not sdvig:
+                            deep[0 if flag else 1] += 1
+                if not sdvig:
+                    last = last_t
 
     if last.master == shape.SHAPE_TYPES['POINT']:
         deep[0] += 1
@@ -71,6 +104,7 @@ def draw_if(ifs, vector='d'):
 
 def draw_switch(switch: dict[str, dict], vector='d', last_if=None):
     global last
+    print(123)
     depth = 0
     flag_first = True
     head_if = last = lx.add_shape("IF", switch["condition"], vector, last_if if last_if else last)
@@ -88,7 +122,7 @@ def draw_switch(switch: dict[str, dict], vector='d', last_if=None):
         if head_if != last:
             depth += 1
     last = lx.add_shape('POINT', depth, 'l', head_case)
-    return depth + 1
+    return last, depth + 1
 
 
 p = parser.Parser()
@@ -103,6 +137,8 @@ p.define()
 
 p.replace_modification()
 p.find_func(f_type)
+
+# p.parse_switch(0, ['  switch (c) {', '    case 0:', '      y = sin(k / 3) + sqrt(cbrt(k + 1));', '      y = sin(k / 3) + sqrt(cbrt(k + 1));', '      break;', '    case 1:', '      y = tan(pow(k, 2)) + sqrt(k + 1);', '      break;', '    case 2:', '      y = pow(atan(k + 1), 2);', '      break;', '    case 3:', '      y = pow(E, (k + 1) / 10);', '      break;', '    default:', '      cout << "Can\'t calculate" << endl;'])
 
 sdvig = 0
 
@@ -126,7 +162,6 @@ for stringn in range(len(p.funcs[funk_name])):
         continue
     switch = p.parse_switch(stringn, p.funcs[funk_name])
     if switch:
-        print(switch)
         sdvig = switch[1]
         draw_switch(switch[0])
         continue

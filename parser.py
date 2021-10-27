@@ -272,7 +272,7 @@ class Parser:
             result = {"condition": switch_regex.group(1),
                       "cases": {}}
             case = True  # False means default branch
-            while counter < len(strings):
+            while counter + 1< len(strings):
                 counter += 1
                 stripped_string = strings[counter].strip()
                 case_regex = re.match(r"\s*case (.*?):$", strings[counter])
