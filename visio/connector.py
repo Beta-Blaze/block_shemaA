@@ -37,6 +37,7 @@ class Connector:
                                 <Cell N='X' V='{self.width}'/>
                                 <Cell N='Y' V='{self.height}'/>
                             </Row>
+                            <Row T='LineTo' IX='4' Del='1'/>
                             </Section>
                             """ if self.shape_to.shape_type in ['r', 'l'] else f"""<Section N='Geometry' IX='0'>
                                                                                         <Row T='MoveTo' IX='1'>
@@ -47,13 +48,14 @@ class Connector:
                                                                                             <Cell N='Y' V='{self.height}'/>
                                                                                         </Row>
                                                                                         <Row T='LineTo' IX='3' Del='1'/>
+                                                                                        <Row T='LineTo' IX='4' Del='1'/>
                                                                                     </Section>"""
 
     def get_xml(self) -> str:
         if self.shape_from.flag_end or self.shape_to.flag_end or self.shape_to.shape_type == 'or':
             return ""
         self.calculate_position()
-        return f"""<Shape ID='{self.shape_id}' Type='Shape' Master='13'>
+        return f"""<Shape ID='{self.shape_id}' Type='Shape' Master='17'>
                         <Cell N='PinX' V='{self.pin_x}'/>
                         <Cell N='PinY' V='{self.pin_y}'/>
                         <Cell N='Width' V='{self.width}'/>
