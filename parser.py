@@ -226,7 +226,7 @@ class Parser:
             if else_regex:
                 state = "PARSING_ELSE_BLOCK"
                 if else_regex.group(1):
-                    opened_brackets -= 1
+                    state = "PARSING_ELSE_IF_BLOCK"
                 else:
                     counter += 1
                     continue
@@ -241,10 +241,12 @@ class Parser:
                     cnt = counter + 1
                     if state == "PARSING_IF_BLOCK":
                         cnt -= 1
-                    inner_block = self.parse_if(cnt, strings, else_if=(state == "PARSING_ELSE_BLOCK"))
+                    inner_block = self.parse_if(cnt, strings, else_if=(state in ["PARSING_ELSE_BLOCK", "PARSING_ELSE_IF_BLOCK"]))
                     counter = inner_block[1]
                     inner_block[0]["Condition"] = condition.group(1)
                     data[True if state == "PARSING_IF_BLOCK" else False].append(inner_block[0])
+                    if state == "PARSING_ELSE_IF_BLOCK":
+                        break
                 continue
             if else_if:
                 state = "PARSING_IF_BLOCK"
