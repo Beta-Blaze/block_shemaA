@@ -33,7 +33,7 @@ class Connector:
                 self.begin_x, self.begin_y = get_connection_point(self.shape_from, "R")
                 self.shape_to.connector_text = False
             else:
-                self.begin_x = self.end_x - 0.905
+                self.begin_x = self.end_x - 0.909
                 self.begin_y = self.end_y
         else:  # Vertical or angled
             if self.shape_to.shape_type in ["l", "r"]:
@@ -42,10 +42,7 @@ class Connector:
             elif self.shape_to.shape_type in ["d", "base"]:
                 self.begin_x, self.begin_y = get_connection_point(self.shape_from, "D")
                 self.end_x, self.end_y = get_connection_point(self.shape_to, "U")
-        try:
-            self.pin_x = (self.begin_x + self.end_x) / 2
-        except:
-            print(self.begin_x)
+        self.pin_x = (self.begin_x + self.end_x) / 2
         self.pin_y = (self.begin_y + self.end_y) / 2
         self.height = self.end_y - self.begin_y
         self.width = self.end_x - self.begin_x if self.end_x - self.begin_x else 0.25
@@ -74,7 +71,7 @@ class Connector:
                                                                                         </Section>"""
 
     def get_xml(self):
-        if not self.shape_to.connector_text and (self.shape_from.flag_end or self.shape_to.flag_end):  # TODO TEMPORARY SOLUTION
+        if self.shape_from.flag_end or self.shape_to.flag_end or self.shape_from.master == shape.SHAPE_TYPES['SWITCH_POINT'] or self.shape_to.master == shape.SHAPE_TYPES['SWITCH_POINT']:
             return ""
         self.calculate_position()
         return f"""<Shape ID='{self.shape_id}' Type='Shape' Master='17'>
