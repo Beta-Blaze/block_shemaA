@@ -110,11 +110,11 @@ def draw_switch(switch: dict[str, dict], vector='d', last_if=None):
         flag_first_case = True
         for string in switch["cases"][case]:
             if flag_first:
-                head_case = last = draw(string, last, 'r', flag_end=True)
+                head_case = last = draw(string, last, 'r')
                 last.connector_text = p.replace_xml_special_symbols(case)
                 flag_first = False
             else:
-                last = draw(string, head_case if flag_first_case else last, 'd' if flag_first_case else 'or', flag_end=True)
+                last = draw(string, head_case if flag_first_case else last, 'd' if flag_first_case else 'or')
                 last.connector_text = p.replace_xml_special_symbols(case)
                 if flag_first_case:
                     head_case = last
@@ -122,6 +122,7 @@ def draw_switch(switch: dict[str, dict], vector='d', last_if=None):
         if head_if != last:
             depth += 1
     last = lx.add_shape('SWITCH_POINT', depth, 'l', head_case)
+    lx.add_connector(head_if, head_case)
     return last, depth + 1
 
 

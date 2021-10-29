@@ -29,7 +29,12 @@ class Connector:
 
         if self.shape_to.connector_text or self.shape_to.shape_type == "or":  # Horizontal
             self.end_x, self.end_y = get_connection_point(self.shape_to, "L")
-            if self.shape_to.shape_type == "or":
+            if self.shape_from.master == shape.SHAPE_TYPES["IF"] and self.shape_to.shape_type == "d":  # Connect head if and last case connector
+                self.begin_x, self.begin_y = get_connection_point(self.shape_from, "D")
+                self.shape_to.connector_text = False
+                self.end_x = self.begin_x
+                self.end_y = self.shape_to.pos[1]
+            elif self.shape_to.shape_type == "or":
                 self.begin_x, self.begin_y = get_connection_point(self.shape_from, "R")
                 self.shape_to.connector_text = False
             else:
