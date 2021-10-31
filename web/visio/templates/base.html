@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <title>Converter</title>
+</head>
+<body class="d-flex vh-100 flex-wrap flex-row">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom w-100 ps-5">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+            <span class="fs-4">C++ Converter</span>
+        </a>
+    </header>
+<div class="container d-flex align-items-center h-75">
+    <div class="container rounded-2 border border-light bg-white p-4 shadow ali">
+        {% block content %}
+        {% endblock %}
+    </div>
+</div>
+    <footer class="d-flex flex-wrap justify-content-start align-items-start pt-3 border-top w-100">
+    <div class="d-flex align-items-center ps-5">
+        <span class="text-muted">© 2021 <a class="text-decoration-none" href="https://github.com/Alan-Shan">Alan Shan</a> & <a class="text-decoration-none" href="https://github.com/Beta-Blaze">BetaBlaze</a></span>
+    </div>
+  </footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+</body>
+</html>
