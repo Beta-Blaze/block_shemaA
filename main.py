@@ -76,6 +76,7 @@ def draw_if(ifs, vector='d'):
 
                     else:
                         last_t = draw(i, (last if flag else block_if), ('r' if flag else 'l'))
+                        deep[0 if flag else 1] += 1
                         if last_t != last:
                             first = False
                 else:
