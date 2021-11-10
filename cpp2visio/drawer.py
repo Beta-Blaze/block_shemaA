@@ -89,14 +89,11 @@ class Drawer:
                     if not sdvig:
                         self.last = last_t
 
-        if self.last.master == shape.SHAPE_TYPES['POINT']:
-            deep[0] += 1
-            deep[1] += 1
         x, y = block_if.pos[0], block_if.pos[1] - max(deep)
         self.last = self.lx.add_shape('POINT', max(deep), 'd', self.last, flag_end=True)
         self.lx.cords.remove(self.last.pos)
         self.last.set_position(x, y)
-        print(deep)
+        deep = map(lambda d: d + 1, deep)
         return max(deep)
 
     def draw_switch(self, switch: dict[str, dict], vector='d', last_if=None):
@@ -125,6 +122,6 @@ class Drawer:
     def process_line(self, line):
         self.last = self.draw(line)
 
-    def drawww(self):
+    def finish_drawing(self):
         self.lx.add_shape('START', 'Конец', 'd', self.last)
         self.lx.write_file()

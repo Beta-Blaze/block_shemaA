@@ -45,5 +45,5 @@ for stringn in range(len(p.funcs[funk_name])):
 
     d.process_line(string)
 
-d.drawww()
+d.finish_drawing()
 v.save_vsdx_file()
