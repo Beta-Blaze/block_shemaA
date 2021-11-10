@@ -1,49 +1,47 @@
 from cpp2visio import parser
 from cpp2visio.drawer import Drawer
-from visio import lxml
 from visio.vsdx import Vsdx
 
-v = Vsdx("new.vsdx")
-lx = lxml.Lxml()
-p = parser.Parser()
-p.read('primer.cpp')
-funk_name = 'main'
-f_type = 'int'
-p.prepare()
-p.define()
+def get_funcs(f_type):
+    p = parser.Parser()
+    p.read('primer.cpp')
+    p.find_func(f_type)
+    return list(p.funcs)
 
-p.replace_modification()
-p.find_func(f_type)
 
-sdvig = 0
+def parse_function(f_type, function_name):
+    v = Vsdx("new.vsdx")
+    p = parser.Parser()
+    p.read('primer.cpp')
+    p.prepare()
+    p.define()
+    p.replace_modification()
+    p.find_func(f_type)
 
-if not p.funcs.get(funk_name, False):
-    print(f'Функции {funk_name} нет в коде')
-    exit()
+    sdvig = 0
+    d = Drawer(p, function_name)
 
-d = Drawer(p, funk_name)
+    for stringn in range(len(p.funcs[function_name])):
+        if sdvig:
+            if sdvig != stringn:
+                continue
+            else:
+                sdvig = 0
 
-for stringn in range(len(p.funcs[funk_name])):
-    if sdvig:
-        if sdvig != stringn:
+        string: str = p.funcs[function_name][stringn]
+        ifs = p.parse_if(stringn, p.funcs[function_name])
+
+        if ifs[0][True] or ifs[0][False]:
+            sdvig = ifs[1]
+            d.draw_if(ifs[0])
             continue
-        else:
-            sdvig = 0
+        switch = p.parse_switch(stringn, p.funcs[function_name])
+        if switch:
+            sdvig = switch[1]
+            d.draw_switch(switch[0])
+            continue
 
-    string: str = p.funcs[funk_name][stringn]
+        d.process_line(string)
 
-    ifs = p.parse_if(stringn, p.funcs[funk_name])
-    if ifs[0][True] or ifs[0][False]:
-        sdvig = ifs[1]
-        d.draw_if(ifs[0])
-        continue
-    switch = p.parse_switch(stringn, p.funcs[funk_name])
-    if switch:
-        sdvig = switch[1]
-        d.draw_switch(switch[0])
-        continue
-
-    d.process_line(string)
-
-d.finish_drawing()
-v.save_vsdx_file()
+    d.finish_drawing()
+    v.save_vsdx_file()
