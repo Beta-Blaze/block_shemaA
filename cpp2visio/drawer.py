@@ -78,6 +78,7 @@ class Drawer:
                             last_t = self.draw(i, (self.last if flag else block_if), ('r' if flag else 'l'))
                             if last_t != self.last:
                                 first = False
+                            deep[0 if flag else 1] += 1
                     else:
                         if sdvig:
                             temp = self.draw_switch(switch2[0])
