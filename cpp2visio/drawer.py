@@ -53,7 +53,6 @@ class Drawer:
                     strings.append(ifs[flag][s])
                 sdvig = 0
                 if strings:
-                    print(strings)
                     switch2 = self.p.parse_switch(0, strings)
                     if switch2:
                         sdvig = switch2[1]
