@@ -1,4 +1,4 @@
-import parser
+from cpp2visio import parser
 from visio import shape, lxml
 from visio.vsdx import Vsdx
 
