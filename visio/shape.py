@@ -17,6 +17,7 @@ class Shape:
         self.cords = cords
         self.shapes: [Shape] = shapes
         self.flag_end = flag_end
+        self.connector_text = ''
 
     def set_position(self, x, y) -> []:
         self.pos = [x, y]
