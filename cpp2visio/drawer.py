@@ -69,9 +69,8 @@ class Drawer:
                 else:
                     if first:
                         if sdvig:
-                            temp = self.draw_switch(switch2[0], 'r' if flag else 'l', self.last if flag else block_if)
-                            self.last = temp[0]
-                            deep[0 if flag else 1] += temp[1]
+                            switch_deep = self.draw_switch(switch2[0], 'r' if flag else 'l', self.last if flag else block_if)
+                            deep[0 if flag else 1] += switch_deep
                             first = False
 
                         else:
@@ -81,9 +80,8 @@ class Drawer:
                             deep[0 if flag else 1] += 1
                     else:
                         if sdvig:
-                            temp = self.draw_switch(switch2[0])
-                            self.last = temp[0]
-                            deep[0 if flag else 1] += temp[1]
+                            switch_deep = self.draw_switch(switch2[0])
+                            deep[0 if flag else 1] += switch_deep[1]
                         else:
                             last_t = self.draw(i, self.last)
                             if last_t != self.last and not sdvig:
@@ -109,17 +107,20 @@ class Drawer:
             flag_first_case = True
             for string in switch["cases"][case]:
                 if flag_first:
-                    head_case = self.last = self.draw(string, self.last, 'r', flag_end=True)
+                    head_case = self.last = self.draw(string, self.last, 'r')
+                    self.last.connector_text = self.p.replace_xml_special_symbols(case)
                     flag_first = False
                 else:
-                    self.last = self.draw(string, head_case if flag_first_case else self.last, 'd' if flag_first_case else 'or', flag_end=True)
+                    self.last = self.draw(string, head_case if flag_first_case else self.last, 'd' if flag_first_case else 'or')
+                    self.last.connector_text = self.p.replace_xml_special_symbols(case)
                     if flag_first_case:
                         head_case = self.last
                 flag_first_case = False
             if head_if != self.last:
                 depth += 1
-        last = self.lx.add_shape('SWITCH_POINT', depth, 'l', head_case)
-        return last, depth + 1
+        self.last = self.lx.add_shape('SWITCH_POINT', depth, 'l', head_case)
+        self.lx.add_connector(head_if, head_case)
+        return depth + 1
 
     def process_line(self, line):
         self.last = self.draw(line)
