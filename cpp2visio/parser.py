@@ -99,7 +99,7 @@ class Parser:
 
     def parse_variable_initializations(self, string: str) -> list:
         parsed_variables = []
-        keywords = "vector bool char wchar_t char8_t char16_t char32_t int short long signed unsigned float double const".split()
+        keywords = "vector bool char wchar_t char8_t char16_t char32_t int short long unsigned signed float double const".split()
         if any([string.lstrip().startswith(i) for i in keywords]):
             parsed = []
             found_breaks = list(re.finditer(r"(, [A-z])", string))
