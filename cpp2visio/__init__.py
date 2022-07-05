@@ -2,7 +2,8 @@ from cpp2visio import parser
 from cpp2visio.drawer import Drawer
 from visio.vsdx import Vsdx
 
-def get_funcs(f_type):
+
+def get_funcs(f_type: str = None):
     p = parser.Parser()
     p.read('primer.cpp')
     p.find_func(f_type)

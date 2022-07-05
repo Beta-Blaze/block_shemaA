@@ -147,7 +147,7 @@ class Parser:
             if any([self.data[s].startswith(i) for i in keywords]) and '{' in self.data[s] and '}' not in self.data[s]:
                 index = s
                 name = self.data[s][self.data[s].index(' ') + 1: self.data[s].index('(')]
-            elif self.data[s] == '}':
+            elif self.data[s].strip('\n') == '}':
                 self.funcs[name] = self.data[index + 1: s]
 
     def parse_while(self, string: str) -> str:
