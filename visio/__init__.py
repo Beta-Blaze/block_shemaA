@@ -1,4 +1,5 @@
 FILE_DIRECTORY = '\\'.join(__file__.split("\\")[:-1]) + '\\'
+ # TODO FiLE_DIRECTORY subject to change in the multithread concept
 
 SHAPE_TYPES = {
     "START": 2,

@@ -13,6 +13,7 @@ class Parser:
 
     def read(self, name: str):
         os.system('.\\helpers\\formatter.exe --i --style="{BasedOnStyle: Google, ColumnLimit: 9999, MaxEmptyLinesToKeep: 0}" ' + name)
+        # TODO: Adapt to both Unix and Win systems
         with open(name, encoding='utf-8') as f:
             self.data = f.readlines()
 
@@ -272,7 +273,7 @@ class Parser:
             result = {"condition": switch_regex.group(1),
                       "cases": {}}
             case = True  # False means default branch
-            while counter + 1< len(strings):
+            while counter + 1 < len(strings):
                 counter += 1
                 stripped_string = strings[counter].strip()
                 case_regex = re.match(r"\s*case (.*?):$", strings[counter])

@@ -5,6 +5,7 @@ from visio import connector
 class Lxml:
     def __init__(self):
         self.filename = r"visio\\temp\\visio\\pages\\page1.xml"
+        # TODO filename subject to change in the multithread concept
         self.shapes: [shape.Shape] = []
         self.connectors: [connector.Connector] = []
         self.cords: [[]] = []

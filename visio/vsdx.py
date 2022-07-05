@@ -25,6 +25,7 @@ class Vsdx:
         shutil.make_archive("temp", 'zip', FILE_DIRECTORY + 'temp')
         shutil.move('temp.zip', self.filename)
         shutil.rmtree(FILE_DIRECTORY + "temp")
+        # TODO FILE_DIRECTORY subject to change in the multithread concept
         try:
             os.system("start new.vsdx")
         except Exception:
