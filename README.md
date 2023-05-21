@@ -21,7 +21,7 @@ This project is designed to parse C++ code and generate flowcharts in Microsoft 
 ## Installation
 To set up the project, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/example/repository.git`
+1. Clone the repository: `git clone https://github.com/Beta-Blaze/block_shemaA.git`
 2. Install the required dependencies: `pip install -r requirements.txt`
 3. Configure Visio API credentials and connection details (if applicable).
 4. Set up the C++ code parser module (if provided separately).
