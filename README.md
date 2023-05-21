@@ -1,4 +1,4 @@
-# # Project Name: C++ Code Parsing and Drawing Flowcharts in Visio
+## Project Name: C++ Code Parsing and Drawing Flowcharts in Visio
 
 ## Table of Contents
 1. [Description](#description)
